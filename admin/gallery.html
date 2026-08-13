@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gallery & Images — Blessed Foundation Admin</title>
+  <link rel="stylesheet" href="/admin/css/admin.css">
+</head>
+<body>
+
+<div class="admin-layout">
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <div class="sidebar-header">
+      <div class="sidebar-logo">
+        <div class="sidebar-logo-icon">🌱</div>
+        <div>
+          <div class="sidebar-logo-name">Blessed Foundation</div>
+          <div class="sidebar-logo-sub">Admin Panel</div>
+        </div>
+      </div>
+    </div>
+    <nav class="sidebar-nav">
+      <div class="sidebar-section-label">Content</div>
+      <a href="/admin/dashboard.html" class="sidebar-link">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+        Dashboard
+      </a>
+      <a href="/admin/gallery.html" class="sidebar-link active">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+        Images & Gallery
+      </a>
+      <a href="/admin/posts.html" class="sidebar-link">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+        Stories & Posts
+      </a>
+      <a href="/admin/programs.html" class="sidebar-link">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+        Programmes
+      </a>
+      <a href="/admin/team.html" class="sidebar-link">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        Team
+      </a>
+      <div class="sidebar-section-label">Operations</div>
+      <a href="/admin/messages.html" class="sidebar-link">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+        Messages
+      </a>
+      <a href="/admin/settings.html" class="sidebar-link">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+        Settings
+      </a>
+      <div class="sidebar-section-label">Site</div>
+      <a href="/" target="_blank" class="sidebar-link">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+        View Public Site
+      </a>
+    </nav>
+    <div class="sidebar-footer">
+      <div class="sidebar-user">
+        <div class="sidebar-avatar" id="admin-avatar">A</div>
+        <div>
+          <div style="font-size:0.85rem;font-weight:600" id="admin-name">Admin</div>
+          <div style="font-size:0.75rem;color:var(--admin-text-muted)">Administrator</div>
+        </div>
+      </div>
+      <button class="btn-admin btn-ghost-admin" style="width:100%" onclick="logout()">Log Out</button>
+    </div>
+  </aside>
+
+  <!-- Main Content -->
+  <div class="admin-main">
+    <div class="admin-topbar">
+      <div class="topbar-title">Images &amp; Gallery</div>
+      <div style="display:flex;gap:12px;align-items:center">
+        <span style="font-size:0.82rem;color:var(--admin-text-muted)" id="image-count">Loading…</span>
+        <button class="btn-admin btn-primary-admin" onclick="document.getElementById('upload-section').scrollIntoView({behavior:'smooth'})">+ Upload Image</button>
+      </div>
+    </div>
+
+    <div class="admin-content">
+
+      <!-- SECTION KEY GUIDE -->
+      <div class="admin-form-card" style="margin-bottom:28px">
+        <div class="admin-form-title">How image sections work</div>
+        <p style="color:var(--admin-text-muted);font-size:0.88rem;line-height:1.7;margin-bottom:16px">
+          Upload any image, then assign it a <strong style="color:var(--admin-text)">Section Key</strong> to control which part of the website it appears in. The site will automatically use your uploaded image in that section — replacing the default.
+        </p>
+        <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px">
+          <div style="background:var(--admin-surface-2);border-radius:6px;padding:14px">
+            <div style="font-size:0.72rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--admin-text-muted);margin-bottom:8px">Homepage</div>
+            <code style="font-size:0.82rem;color:#a3e635">hero</code> — Main hero background<br>
+            <code style="font-size:0.82rem;color:#a3e635">home-intro</code> — "Who we are" section<br>
+            <code style="font-size:0.82rem;color:#a3e635">home-quote</code> — Community story image
+          </div>
+          <div style="background:var(--admin-surface-2);border-radius:6px;padding:14px">
+            <div style="font-size:0.72rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--admin-text-muted);margin-bottom:8px">About</div>
+            <code style="font-size:0.82rem;color:#a3e635">about-hero</code> — About page hero<br>
+            <code style="font-size:0.82rem;color:#a3e635">about-intro</code> — Founders story image<br>
+            <code style="font-size:0.82rem;color:#a3e635">team-[name]</code> — Team member photo
+          </div>
+          <div style="background:var(--admin-surface-2);border-radius:6px;padding:14px">
+            <div style="font-size:0.72rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--admin-text-muted);margin-bottom:8px">Our Work / Programs</div>
+            <code style="font-size:0.82rem;color:#a3e635">program-01</code> — Education card<br>
+            <code style="font-size:0.82rem;color:#a3e635">program-02</code> — Community card<br>
+            <code style="font-size:0.82rem;color:#a3e635">program-03</code> — Youth card<br>
+            <code style="font-size:0.82rem;color:#a3e635">program-04</code> — Family card
+          </div>
+          <div style="background:var(--admin-surface-2);border-radius:6px;padding:14px">
+            <div style="font-size:0.72rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--admin-text-muted);margin-bottom:8px">Stories</div>
+            <code style="font-size:0.82rem;color:#a3e635">stories-hero</code> — Stories page hero<br>
+            <code style="font-size:0.82rem;color:#a3e635">story-[slug]</code> — Specific story cover<br>
+            <code style="font-size:0.82rem;color:#a3e635">get-involved-hero</code> — Get Involved hero<br>
+            <code style="font-size:0.82rem;color:#a3e635">general</code> — No specific section
+          </div>
+        </div>
+      </div>
+
+      <!-- UPLOAD FORM -->
+      <div class="admin-form-card" id="upload-section">
+        <div class="admin-form-title">Upload New Image</div>
+        <form id="upload-form">
+          <div class="admin-form-row">
+            <div class="admin-form-group">
+              <label class="admin-label">Image File *</label>
+              <input type="file" id="image-file" accept="image/*" class="admin-input" required>
+            </div>
+            <div class="admin-form-group">
+              <label class="admin-label">Section Key</label>
+              <input type="text" id="image-section" class="admin-input" placeholder="e.g. hero, program-01, about-intro">
+            </div>
+          </div>
+          <div class="admin-form-row">
+            <div class="admin-form-group">
+              <label class="admin-label">Caption (shown on site where applicable)</label>
+              <input type="text" id="image-caption" class="admin-input" placeholder="Describe the image for site visitors">
+            </div>
+            <div class="admin-form-group">
+              <label class="admin-label">Alt Text (for accessibility)</label>
+              <input type="text" id="image-alt" class="admin-input" placeholder="Short description for screen readers">
+            </div>
+          </div>
+          <div style="display:flex;gap:12px;align-items:center">
+            <button type="submit" class="btn-admin btn-primary-admin">Upload Image</button>
+            <span id="upload-status" style="font-size:0.88rem;color:var(--admin-text-muted)"></span>
+          </div>
+        </form>
+      </div>
+
+      <!-- IMAGE GRID -->
+      <div class="admin-table-wrap">
+        <div class="admin-table-header" style="display:flex;justify-content:space-between;align-items:center">
+          <div class="admin-table-title">All Images</div>
+          <input type="text" id="search-images" class="admin-input" placeholder="Filter by caption or section…" style="max-width:260px;padding:8px 12px">
+        </div>
+        <div id="gallery-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:20px;padding:20px">
+          <div style="text-align:center;padding:40px;color:var(--admin-text-muted);grid-column:1/-1">Loading images…</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Edit modal -->
+<div id="edit-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:200;align-items:center;justify-content:center">
+  <div style="background:var(--admin-surface);border:1px solid var(--admin-border);border-radius:12px;padding:36px;width:100%;max-width:520px;margin:24px">
+    <h3 style="font-family:'DM Serif Display',serif;font-weight:400;margin-bottom:24px">Edit Image Details</h3>
+    <input type="hidden" id="edit-id">
+    <div class="admin-form-group">
+      <label class="admin-label">Caption</label>
+      <input type="text" id="edit-caption" class="admin-input" placeholder="Caption shown on site">
+    </div>
+    <div class="admin-form-group">
+      <label class="admin-label">Alt Text</label>
+      <input type="text" id="edit-alt" class="admin-input" placeholder="Accessibility description">
+    </div>
+    <div class="admin-form-group">
+      <label class="admin-label">Section Key</label>
+      <input type="text" id="edit-section" class="admin-input" placeholder="e.g. hero, program-01">
+    </div>
+    <div class="admin-form-group">
+      <label class="admin-label">Visibility</label>
+      <select id="edit-visible" class="admin-select">
+        <option value="true">Visible</option>
+        <option value="false">Hidden</option>
+      </select>
+    </div>
+    <div style="display:flex;gap:12px;margin-top:8px">
+      <button class="btn-admin btn-primary-admin" onclick="saveEdit()">Save Changes</button>
+      <button class="btn-admin btn-ghost-admin" onclick="closeModal()">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<script src="/admin/js/admin.js"></script>
+<script>
+const token = localStorage.getItem('bf_admin_token');
+if (!token) window.location.href = '/admin/index.html';
+
+let allImages = [];
+
+// Load images
+async function loadGallery() {
+  try {
+    const res = await fetch('/api/gallery?visible_only=false', { headers: { Authorization: `Bearer ${token}` } });
+    allImages = await res.json();
+    document.getElementById('image-count').textContent = `${allImages.length} image${allImages.length !== 1 ? 's' : ''}`;
+    renderGrid(allImages);
+  } catch { document.getElementById('image-count').textContent = 'Error loading'; }
+}
+
+function renderGrid(images) {
+  const grid = document.getElementById('gallery-grid');
+  if (!images.length) {
+    grid.innerHTML = '<div style="text-align:center;padding:60px;color:var(--admin-text-muted);grid-column:1/-1">No images uploaded yet. Use the form above to upload your first image.</div>';
+    return;
+  }
+  grid.innerHTML = images.map(img => `
+    <div style="background:var(--admin-surface-2);border-radius:8px;overflow:hidden;border:1px solid var(--admin-border)">
+      <div style="height:180px;overflow:hidden;position:relative">
+        <img src="${img.url}" alt="${img.alt_text || img.caption || 'Gallery image'}"
+             style="width:100%;height:100%;object-fit:cover;display:block"
+             onerror="this.src='data:image/svg+xml,<svg xmlns=&quot;http://www.w3.org/2000/svg&quot; width=&quot;400&quot; height=&quot;200&quot;><rect width=&quot;400&quot; height=&quot;200&quot; fill=&quot;%23222&quot;/><text x=&quot;50%&quot; y=&quot;50%&quot; fill=&quot;%23666&quot; text-anchor=&quot;middle&quot; dy=&quot;.3em&quot;>No preview</text></svg>'">
+        ${!img.is_visible ? '<div style="position:absolute;top:8px;right:8px;background:rgba(0,0,0,0.7);color:#aaa;font-size:0.7rem;padding:3px 8px;border-radius:4px">HIDDEN</div>' : ''}
+        ${img.section_key ? `<div style="position:absolute;top:8px;left:8px;background:rgba(63,74,50,0.9);color:#fff;font-size:0.7rem;padding:3px 8px;border-radius:4px">${img.section_key}</div>` : ''}
+      </div>
+      <div style="padding:14px">
+        <div style="font-size:0.85rem;font-weight:500;color:var(--admin-text);margin-bottom:4px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${img.caption || ''}">
+          ${img.caption || '<span style="color:var(--admin-text-muted)">No caption</span>'}
+        </div>
+        <div style="font-size:0.75rem;color:var(--admin-text-muted);margin-bottom:12px">
+          ${new Date(img.uploaded_at).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}
+        </div>
+        <div style="display:flex;gap:8px">
+          <button class="btn-admin btn-ghost-admin" style="flex:1;font-size:0.8rem;padding:7px" onclick="openEdit(${img.id})">Edit</button>
+          <button class="btn-admin btn-danger-admin" style="font-size:0.8rem;padding:7px 12px" onclick="deleteImage(${img.id})">Delete</button>
+        </div>
+      </div>
+    </div>
+  `).join('');
+}
+
+// Search filter
+document.getElementById('search-images').addEventListener('input', function() {
+  const q = this.value.toLowerCase();
+  renderGrid(allImages.filter(img =>
+    (img.caption || '').toLowerCase().includes(q) ||
+    (img.section_key || '').toLowerCase().includes(q) ||
+    (img.alt_text || '').toLowerCase().includes(q)
+  ));
+});
+
+// Upload
+document.getElementById('upload-form').addEventListener('submit', async e => {
+  e.preventDefault();
+  const status = document.getElementById('upload-status');
+  const fileInput = document.getElementById('image-file');
+  if (!fileInput.files[0]) return;
+
+  status.textContent = 'Uploading…';
+  const formData = new FormData();
+  formData.append('image', fileInput.files[0]);
+  formData.append('caption', document.getElementById('image-caption').value);
+  formData.append('alt_text', document.getElementById('image-alt').value);
+  formData.append('section_key', document.getElementById('image-section').value);
+  formData.append('category', document.getElementById('image-section').value || 'general');
+
+  try {
+    const res = await fetch('/api/gallery', {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${token}` },
+      body: formData,
+    });
+    if (res.ok) {
+      status.style.color = '#a3e635';
+      status.textContent = '✓ Image uploaded successfully';
+      e.target.reset();
+      await loadGallery();
+      setTimeout(() => status.textContent = '', 3000);
+    } else {
+      const j = await res.json();
+      status.style.color = '#f87171';
+      status.textContent = j.error || 'Upload failed.';
+    }
+  } catch {
+    status.style.color = '#f87171';
+    status.textContent = 'Network error.';
+  }
+});
+
+// Edit modal
+function openEdit(id) {
+  const img = allImages.find(i => i.id === id);
+  if (!img) return;
+  document.getElementById('edit-id').value = id;
+  document.getElementById('edit-caption').value = img.caption || '';
+  document.getElementById('edit-alt').value = img.alt_text || '';
+  document.getElementById('edit-section').value = img.section_key || '';
+  document.getElementById('edit-visible').value = img.is_visible ? 'true' : 'false';
+  const modal = document.getElementById('edit-modal');
+  modal.style.display = 'flex';
+}
+
+function closeModal() {
+  document.getElementById('edit-modal').style.display = 'none';
+}
+
+async function saveEdit() {
+  const id = document.getElementById('edit-id').value;
+  const payload = {
+    caption: document.getElementById('edit-caption').value,
+    alt_text: document.getElementById('edit-alt').value,
+    section_key: document.getElementById('edit-section').value || null,
+    is_visible: document.getElementById('edit-visible').value === 'true',
+  };
+  try {
+    const res = await fetch(`/api/gallery/${id}`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+      body: JSON.stringify(payload),
+    });
+    if (res.ok) {
+      closeModal();
+      await loadGallery();
+    }
+  } catch {}
+}
+
+async function deleteImage(id) {
+  if (!confirm('Delete this image? This cannot be undone.')) return;
+  try {
+    const res = await fetch(`/api/gallery/${id}`, {
+      method: 'DELETE',
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    if (res.ok) await loadGallery();
+  } catch {}
+}
+
+function logout() {
+  localStorage.removeItem('bf_admin_token');
+  window.location.href = '/admin/index.html';
+}
+
+// Close modal on outside click
+document.getElementById('edit-modal').addEventListener('click', function(e) {
+  if (e.target === this) closeModal();
+});
+
+loadGallery();
+</script>
+</body>
+</html>

@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Contact Us — Blessed Foundation Malawi</title>
+  <meta name="description" content="Get in touch with Blessed Foundation Malawi. We'd love to hear from you.">
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌱</text></svg>">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="container navbar">
+    <a href="/" class="brand-logo">
+      <div class="brand-symbol">🌱</div>
+      <div class="brand-text">
+        <span class="brand-name">Blessed Foundation</span>
+        <span class="brand-location">Malawi</span>
+      </div>
+    </a>
+    <nav class="nav-menu" id="nav-menu">
+      <a href="/" class="nav-link">Home</a>
+      <a href="/about.html" class="nav-link">About</a>
+      <a href="/programs.html" class="nav-link">Our Work</a>
+      <a href="/impact.html" class="nav-link">Impact</a>
+      <a href="/stories.html" class="nav-link">Stories</a>
+      <a href="/get-involved.html" class="nav-link">Get Involved</a>
+      <a href="/donate.html" class="btn-donate-nav">Donate</a>
+    </nav>
+    <button class="menu-toggle" id="menu-toggle" aria-label="Toggle navigation">☰</button>
+  </div>
+</header>
+
+<main>
+  <section class="section section-offwhite" style="padding:80px 0 60px">
+    <div class="container" style="max-width:760px">
+      <div class="text-meta" style="margin-bottom:12px">GET IN TOUCH</div>
+      <h1 style="margin-bottom:20px">We'd love to hear from you.</h1>
+      <p class="body-lead">
+        Whether you have a question about our work, want to volunteer, are interested in a partnership, or would like to discuss a donation — reach out. We read every message.
+      </p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <div class="story-split">
+        <!-- Left: contact info -->
+        <div>
+          <div class="text-meta" style="margin-bottom:16px">OUR DETAILS</div>
+
+          <div style="margin-bottom:28px">
+            <h4 style="font-family:var(--font-sans);font-size:0.85rem;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--earthy-brown);margin-bottom:6px">Location</h4>
+            <p style="color:var(--text-muted)" data-setting="contact_address">Blantyre, Malawi (Opposite HHI)</p>
+          </div>
+
+          <div style="margin-bottom:28px">
+            <h4 style="font-family:var(--font-sans);font-size:0.85rem;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--earthy-brown);margin-bottom:6px">Phone</h4>
+            <p><a href="tel:+265990580853" style="color:var(--army-green);font-weight:500" data-setting="contact_phone">+265 990 58 08 53</a></p>
+          </div>
+
+          <div style="margin-bottom:28px">
+            <h4 style="font-family:var(--font-sans);font-size:0.85rem;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--earthy-brown);margin-bottom:6px">Email</h4>
+            <p><a href="mailto:info@blessedfoundation.mw" style="color:var(--army-green);font-weight:500" data-setting="contact_email">info@blessedfoundation.mw</a></p>
+          </div>
+
+          <div style="padding:28px;background:var(--warm-offwhite);border-radius:var(--radius-md);border-left:4px solid var(--army-green)">
+            <p style="font-size:0.95rem;color:var(--text-muted);line-height:1.7">
+              We are a small team. We typically respond to messages within 2–3 working days. Thank you for your patience.
+            </p>
+          </div>
+        </div>
+
+        <!-- Right: form -->
+        <div>
+          <div class="donation-card" style="max-width:100%">
+            <h3 style="margin-bottom:20px">Send Us a Message</h3>
+            <form id="contact-form">
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="name">Full Name *</label>
+                  <input type="text" id="name" name="name" required placeholder="Your full name">
+                </div>
+                <div class="form-group">
+                  <label for="email">Email Address *</label>
+                  <input type="email" id="email" name="email" required placeholder="your@email.com">
+                </div>
+              </div>
+
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="phone">Phone Number</label>
+                  <input type="tel" id="phone" name="phone" placeholder="+265...">
+                </div>
+                <div class="form-group">
+                  <label for="reason">Reason for contacting us</label>
+                  <select id="reason" name="reason">
+                    <option value="General enquiry">General enquiry</option>
+                    <option value="Volunteer">Volunteer</option>
+                    <option value="Partnership">Partnership</option>
+                    <option value="Donation">Donation</option>
+                    <option value="Report request">Report request</option>
+                    <option value="Other">Other</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="message">Message *</label>
+                <textarea id="message" name="message" required placeholder="Write your message here…"></textarea>
+              </div>
+
+              <button type="submit" class="btn btn-primary" style="width:100%">Send Message</button>
+              <div id="form-status" style="display:none;margin-top:16px;font-weight:600;padding:12px;border-radius:var(--radius-sm)"></div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<!-- Full Footer -->
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <h3>Blessed Foundation Malawi</h3>
+        <p>Building hope. Changing lives. Working alongside Malawian communities to create opportunities and a better future.</p>
+        <div style="font-size:0.85rem;color:rgba(255,255,255,0.55)">📍 <span data-setting="contact_address">Blantyre, Malawi (Opposite HHI)</span></div>
+      </div>
+      <div>
+        <div class="footer-heading">Navigation</div>
+        <ul class="footer-links">
+          <li><a href="/">Home</a></li>
+          <li><a href="/about.html">About Us</a></li>
+          <li><a href="/programs.html">Our Work</a></li>
+          <li><a href="/impact.html">Impact</a></li>
+          <li><a href="/stories.html">Stories</a></li>
+          <li><a href="/get-involved.html">Get Involved</a></li>
+          <li><a href="/transparency.html">Transparency</a></li>
+        </ul>
+      </div>
+      <div>
+        <div class="footer-heading">Our Work</div>
+        <ul class="footer-links">
+          <li><a href="/programs.html">Education</a></li>
+          <li><a href="/programs.html">Community Development</a></li>
+          <li><a href="/programs.html">Youth Empowerment</a></li>
+          <li><a href="/programs.html">Family Support</a></li>
+        </ul>
+      </div>
+      <div>
+        <div class="footer-heading">Contact</div>
+        <p style="font-size:0.88rem;color:rgba(255,255,255,0.65);margin-bottom:8px">✉️ <span data-setting="contact_email">info@blessedfoundation.mw</span></p>
+        <p style="font-size:0.88rem;color:rgba(255,255,255,0.65);margin-bottom:20px">📞 <span data-setting="contact_phone">+265 990 58 08 53</span></p>
+        <a href="/admin" class="btn btn-secondary" style="font-size:0.82rem;padding:8px 16px">Admin Portal</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© <span id="year"></span> Blessed Foundation Malawi. All rights reserved.</span>
+      <span>Built for the people of Malawi</span>
+    </div>
+  </div>
+</footer>
+
+<script src="/js/main.js"></script>
+<script>
+  document.getElementById('year').textContent = new Date().getFullYear();
+  const reasonParam = new URLSearchParams(window.location.search).get('reason');
+  if (reasonParam) {
+    const sel = document.getElementById('reason');
+    if (sel) {
+      for (let i = 0; i < sel.options.length; i++) {
+        if (sel.options[i].value === reasonParam) { sel.selectedIndex = i; break; }
+      }
+    }
+  }
+</script>
+</body>
+</html>

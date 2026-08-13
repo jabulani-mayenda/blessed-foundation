@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Stories — Blessed Foundation Malawi</title>
+  <meta name="description" content="Stories of people, communities and change from Blessed Foundation Malawi.">
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌱</text></svg>">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="container navbar">
+    <a href="/" class="brand-logo">
+      <div class="brand-symbol">🌱</div>
+      <div class="brand-text">
+        <span class="brand-name">Blessed Foundation</span>
+        <span class="brand-location">Malawi</span>
+      </div>
+    </a>
+    <nav class="nav-menu" id="nav-menu">
+      <a href="/" class="nav-link">Home</a>
+      <a href="/about.html" class="nav-link">About</a>
+      <a href="/programs.html" class="nav-link">Our Work</a>
+      <a href="/impact.html" class="nav-link">Impact</a>
+      <a href="/stories.html" class="nav-link active">Stories</a>
+      <a href="/get-involved.html" class="nav-link">Get Involved</a>
+      <a href="/donate.html" class="btn-donate-nav">Donate</a>
+    </nav>
+    <button class="menu-toggle" id="menu-toggle" aria-label="Toggle navigation">☰</button>
+  </div>
+</header>
+
+<main>
+  <!-- Hero -->
+  <section class="hero-section" style="height:auto">
+    <div class="hero-image-container" style="height:42vh;min-height:320px">
+      <img src="https://images.unsplash.com/photo-1531206715517-5c0ba140b2b8?w=1600&q=80" alt="Community members in Malawi">
+      <div class="hero-overlay"></div>
+    </div>
+    <div class="hero-content">
+      <div class="container">
+        <div class="hero-content-inner">
+          <div class="hero-label">STORIES</div>
+          <h1 class="hero-title">People and communities.</h1>
+          <p class="hero-subtitle">Real stories from the communities we walk alongside.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Single story detail (shown when ?slug= is in URL) -->
+  <section class="section" id="story-detail-section" style="display:none">
+    <div class="container">
+      <div id="story-detail"></div>
+    </div>
+  </section>
+
+  <!-- Stories list + filter -->
+  <section class="section" id="stories-list-section">
+    <div class="container">
+      <div style="display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:16px;margin-bottom:8px">
+        <div>
+          <div class="text-meta" style="margin-bottom:8px">COMMUNITY UPDATES</div>
+          <h2>Stories from our work</h2>
+        </div>
+      </div>
+
+      <!-- Filter bar -->
+      <div class="filter-bar">
+        <button class="filter-btn active" data-filter="all">All Stories</button>
+        <button class="filter-btn" data-filter="Education">Education</button>
+        <button class="filter-btn" data-filter="Community">Community</button>
+        <button class="filter-btn" data-filter="Youth">Youth</button>
+      </div>
+
+      <!-- Magazine grid — loaded via JS -->
+      <div class="magazine-grid" id="stories-grid">
+        <div style="grid-column:1/-1;text-align:center;padding:80px 0">
+          <p style="color:var(--text-muted)">Loading stories…</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="section section-army" style="text-align:center">
+    <div class="container" style="max-width:640px">
+      <h2 style="margin-bottom:16px">Be part of the next story.</h2>
+      <p style="color:rgba(255,255,255,0.88);font-size:1.05rem;line-height:1.7;margin-bottom:32px">
+        Your support helps Blessed Foundation reach more communities across Malawi.
+      </p>
+      <div style="display:flex;gap:16px;justify-content:center;flex-wrap:wrap">
+        <a href="/donate.html" class="btn btn-secondary" style="background:var(--pure-white);color:var(--army-green-dark)">Support Our Work</a>
+        <a href="/get-involved.html" class="btn btn-outline-white">Get Involved</a>
+      </div>
+    </div>
+  </section>
+</main>
+
+<!-- Full Footer -->
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <h3>Blessed Foundation Malawi</h3>
+        <p>Building hope. Changing lives. Working alongside Malawian communities to create opportunities and a better future.</p>
+        <div style="font-size:0.85rem;color:rgba(255,255,255,0.55)">📍 <span data-setting="contact_address">Blantyre, Malawi (Opposite HHI)</span></div>
+      </div>
+      <div>
+        <div class="footer-heading">Navigation</div>
+        <ul class="footer-links">
+          <li><a href="/">Home</a></li>
+          <li><a href="/about.html">About Us</a></li>
+          <li><a href="/programs.html">Our Work</a></li>
+          <li><a href="/impact.html">Impact</a></li>
+          <li><a href="/stories.html">Stories</a></li>
+          <li><a href="/get-involved.html">Get Involved</a></li>
+          <li><a href="/transparency.html">Transparency</a></li>
+        </ul>
+      </div>
+      <div>
+        <div class="footer-heading">Our Work</div>
+        <ul class="footer-links">
+          <li><a href="/programs.html">Education</a></li>
+          <li><a href="/programs.html">Community Development</a></li>
+          <li><a href="/programs.html">Youth Empowerment</a></li>
+          <li><a href="/programs.html">Family Support</a></li>
+        </ul>
+      </div>
+      <div>
+        <div class="footer-heading">Contact</div>
+        <p style="font-size:0.88rem;color:rgba(255,255,255,0.65);margin-bottom:8px">✉️ <span data-setting="contact_email">info@blessedfoundation.mw</span></p>
+        <p style="font-size:0.88rem;color:rgba(255,255,255,0.65);margin-bottom:20px">📞 <span data-setting="contact_phone">+265 990 58 08 53</span></p>
+        <a href="/admin" class="btn btn-secondary" style="font-size:0.82rem;padding:8px 16px">Admin Portal</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© <span id="year"></span> Blessed Foundation Malawi. All rights reserved.</span>
+      <span>Built for the people of Malawi</span>
+    </div>
+  </div>
+</footer>
+
+<script src="/js/main.js"></script>
+<script>
+  document.getElementById('year').textContent = new Date().getFullYear();
+
+  // Show/hide detail vs list depending on slug param
+  const hasSlug = new URLSearchParams(window.location.search).get('slug');
+  if (hasSlug) {
+    document.getElementById('story-detail-section').style.display = 'block';
+    document.getElementById('stories-list-section').style.display = 'none';
+  }
+</script>
+</body>
+</html>

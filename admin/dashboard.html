@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard — Blessed Foundation Admin</title>
+  <link rel="stylesheet" href="/admin/css/admin.css">
+</head>
+<body>
+<div class="admin-layout">
+  <aside class="sidebar">
+    <div class="sidebar-header">
+      <div class="sidebar-logo">
+        <div class="sidebar-logo-icon">🕊️</div>
+        <div>
+          <div class="sidebar-logo-name">Blessed Foundation</div>
+          <div class="sidebar-logo-sub">Admin Control Panel</div>
+        </div>
+      </div>
+    </div>
+    <nav class="sidebar-nav">
+      <div class="sidebar-section-label">Overview</div>
+      <a href="/admin/dashboard.html" class="sidebar-link">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+        Dashboard
+      </a>
+      <div class="sidebar-section-label">Content & Media</div>
+      <a href="/admin/gallery.html" class="sidebar-link">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+        Gallery & Image Captions
+      </a>
+      <a href="/admin/posts.html" class="sidebar-link">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+        News & Events
+      </a>
+      <a href="/admin/programs.html" class="sidebar-link">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+        Causes & Programs
+      </a>
+      <a href="/admin/team.html" class="sidebar-link">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+        Team Members
+      </a>
+      <div class="sidebar-section-label">Communication</div>
+      <a href="/admin/messages.html" class="sidebar-link">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+        Messages Inbox
+        <span class="badge" id="unread-badge" style="display:none">0</span>
+      </a>
+      <div class="sidebar-section-label">Settings</div>
+      <a href="/admin/settings.html" class="sidebar-link">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93l-1.41 1.41M4.93 4.93l1.41 1.41M19.07 19.07l-1.41-1.41M4.93 19.07l1.41-1.41M12 2v2m0 18v-2m10-8h-2M4 12H2"/></svg>
+        Site Settings
+      </a>
+      <a href="/" class="sidebar-link" target="_blank">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+        View Public Site
+      </a>
+    </nav>
+    <div class="sidebar-footer">
+      <div class="sidebar-user">
+        <div class="sidebar-avatar" id="sidebar-avatar">A</div>
+        <div>
+          <div class="sidebar-username" id="sidebar-username">Admin</div>
+          <div class="sidebar-role">Administrator</div>
+        </div>
+      </div>
+      <button id="logout-btn" class="btn-admin btn-ghost-admin" style="width:100%;justify-content:center">Sign Out</button>
+    </div>
+  </aside>
+
+  <main class="admin-main">
+    <div class="admin-topbar">
+      <h1 class="topbar-title">Dashboard Overview</h1>
+      <div class="topbar-actions">
+        <a href="/admin/gallery.html" class="btn-admin btn-primary-admin">
+          + Add Image with Caption
+        </a>
+      </div>
+    </div>
+
+    <div class="admin-content">
+      <!-- Stats -->
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-header">
+            <span style="font-size:0.8rem;color:var(--admin-text-muted);font-weight:600">Gallery Images</span>
+          </div>
+          <div class="stat-value" id="stat-gallery">—</div>
+          <div class="stat-label">All uploaded photos</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-header">
+            <span style="font-size:0.8rem;color:var(--admin-text-muted);font-weight:600">Posts & News</span>
+          </div>
+          <div class="stat-value" id="stat-posts">—</div>
+          <div class="stat-label">Published articles</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-header">
+            <span style="font-size:0.8rem;color:var(--admin-text-muted);font-weight:600">Causes & Programs</span>
+          </div>
+          <div class="stat-value" id="stat-programs">—</div>
+          <div class="stat-label">Active causes</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-header">
+            <span style="font-size:0.8rem;color:var(--admin-text-muted);font-weight:600">Messages Inbox</span>
+          </div>
+          <div class="stat-value" id="stat-messages">—</div>
+          <div class="stat-label"><span id="stat-unread" style="color:var(--admin-red)">—</span> unread</div>
+        </div>
+      </div>
+
+      <div style="background:var(--admin-surface);border:1px solid var(--admin-border);border-radius:var(--radius);padding:24px">
+        <h3 style="font-size:1.1rem;color:var(--admin-text);margin-bottom:12px">🖼️ Image & Caption Management</h3>
+        <p style="font-size:0.9rem;color:var(--admin-text-muted);line-height:1.6;margin-bottom:16px">
+          You can add images anywhere across the website with custom captions, category tags, and visibility controls. Go to <a href="/admin/gallery.html" style="color:var(--admin-green);font-weight:700">Gallery Manager</a> to upload and caption images.
+        </p>
+      </div>
+    </div>
+  </main>
+</div>
+
+<script src="/admin/js/admin.js"></script>
+<script>
+  initSidebar();
+  loadUnreadCount();
+  initDashboard();
+</script>
+</body>
+</html>
