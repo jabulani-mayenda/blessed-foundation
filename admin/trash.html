@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Trash Bin — Blessed Foundation Admin</title>
+  <link rel="stylesheet" href="/admin/css/admin.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+<div class="admin-layout">
+  <aside class="sidebar" id="sidebar"></aside>
+
+  <main class="admin-main">
+    <div class="admin-topbar">
+      <div>
+        <h1 class="topbar-title">Trash Holding Bin</h1>
+        <p style="font-size:0.85rem;color:var(--admin-text-muted)">Safety net holding area for deleted items — restore or permanently purge</p>
+      </div>
+    </div>
+
+    <div class="admin-content">
+      <div class="admin-table-container">
+        <table class="admin-table">
+          <thead>
+            <tr>
+              <th>Item Name / Title</th>
+              <th>Content Type</th>
+              <th>Date Deleted</th>
+              <th style="width:180px">Actions</th>
+            </tr>
+          </thead>
+          <tbody id="trash-tbody">
+            <tr><td colspan="4" style="text-align:center;color:var(--admin-text-muted);padding:40px">Loading trash bin…</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </main>
+</div>
+
+<script src="/admin/js/admin.js"></script>
+<script>
+  initSidebar();
+  loadUnreadCount();
+
+  let trashItems = [];
+
+  async function loadTrash() {
+    try {
+      const res = await authFetch('/api/trash');
+      trashItems = await res.json();
+      renderTrash();
+    } catch {
+      document.getElementById('trash-tbody').innerHTML = '<tr><td colspan="4" style="text-align:center;color:var(--admin-red)">Failed to load trash.</td></tr>';
+    }
+  }
+
+  function renderTrash() {
+    const tbody = document.getElementById('trash-tbody');
+    if (!trashItems.length) {
+      tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;color:var(--admin-text-muted);padding:40px">Trash bin is empty. No deleted items.</td></tr>';
+      return;
+    }
+    tbody.innerHTML = trashItems.map(t => `
+      <tr>
+        <td><div style="font-weight:700">${t.name}</div></td>
+        <td><span class="badge-status" style="background:rgba(255,255,255,0.06);color:var(--admin-text)">${t.type}</span></td>
+        <td>${fmtDate(t.deleted_at)}</td>
+        <td>
+          <div style="display:flex;gap:6px">
+            <button class="btn-admin btn-secondary-admin" onclick="restoreItem('${t.type}', ${t.id})">♻️ Restore</button>
+            <button class="btn-admin btn-danger-admin" onclick="purgeItem('${t.type}', ${t.id})">Purge</button>
+          </div>
+        </td>
+      </tr>
+    `).join('');
+  }
+
+  async function restoreItem(type, id) {
+    try {
+      const res = await authFetch('/api/trash/restore', { method: 'POST', body: JSON.stringify({ type, id }) });
+      if (res?.ok) {
+        adminToast('Item restored successfully!');
+        loadTrash();
+      }
+    } catch { adminToast('Restore failed', 'error'); }
+  }
+
+  async function purgeItem(type, id) {
+    if (!confirm('Are you sure you want to permanently delete this item? This action CANNOT be undone.')) return;
+    try {
+      const res = await authFetch('/api/trash/purge', { method: 'DELETE', body: JSON.stringify({ type, id }) });
+      if (res?.ok) {
+        adminToast('Item permanently deleted');
+        loadTrash();
+      }
+    } catch { adminToast('Purge failed', 'error'); }
+  }
+
+  loadTrash();
+</script>
+</body>
+</html>

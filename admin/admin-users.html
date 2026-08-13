@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Users & Roles — Blessed Foundation Admin</title>
+  <link rel="stylesheet" href="/admin/css/admin.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+<div class="admin-layout">
+  <aside class="sidebar" id="sidebar"></aside>
+
+  <main class="admin-main">
+    <div class="admin-topbar">
+      <div>
+        <h1 class="topbar-title">Administrators & Role Permissions</h1>
+        <p style="font-size:0.85rem;color:var(--admin-text-muted)">Manage staff accounts and permissions</p>
+      </div>
+      <div class="topbar-actions">
+        <button class="btn-admin btn-primary-admin" onclick="openModal('user-modal')">
+          + Add Admin User
+        </button>
+      </div>
+    </div>
+
+    <div class="admin-content">
+      <div class="admin-table-container">
+        <table class="admin-table">
+          <thead>
+            <tr>
+              <th>User Name</th>
+              <th>Email</th>
+              <th>Role</th>
+              <th>Status</th>
+              <th style="width:100px">Actions</th>
+            </tr>
+          </thead>
+          <tbody id="users-tbody">
+            <tr><td colspan="5" style="text-align:center;color:var(--admin-text-muted);padding:40px">Loading staff accounts…</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </main>
+</div>
+
+<!-- User Modal -->
+<div id="user-modal" class="modal-overlay">
+  <div class="modal-body">
+    <div class="modal-header">
+      <h3 style="font-size:1.1rem;font-weight:700">Add Staff Administrator</h3>
+      <button class="btn-admin btn-ghost-admin" onclick="closeModal('user-modal')">✕</button>
+    </div>
+
+    <form id="user-form">
+      <div class="admin-form-group">
+        <label class="admin-label" for="user-fullname">Full Name</label>
+        <input class="admin-input" type="text" id="user-fullname" placeholder="e.g. Benson Mayenda" required>
+      </div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+        <div class="admin-form-group">
+          <label class="admin-label" for="user-username">Username</label>
+          <input class="admin-input" type="text" id="user-username" placeholder="benson" required>
+        </div>
+        <div class="admin-form-group">
+          <label class="admin-label" for="user-email">Email Address</label>
+          <input class="admin-input" type="email" id="user-email" placeholder="benson@blessedfoundation.mw" required>
+        </div>
+      </div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+        <div class="admin-form-group">
+          <label class="admin-label" for="user-password">Password</label>
+          <input class="admin-input" type="password" id="user-password" placeholder="••••••••" required>
+        </div>
+        <div class="admin-form-group">
+          <label class="admin-label" for="user-role">Role Permission</label>
+          <select class="admin-select" id="user-role">
+            <option value="super_admin">Super Administrator (Full Access)</option>
+            <option value="content_manager">Content Manager (Stories, Pages, Media)</option>
+            <option value="finance_manager">Finance Manager (Donations & Reports)</option>
+            <option value="communications_manager">Communications Manager (News & Messages)</option>
+          </select>
+        </div>
+      </div>
+
+      <div style="display:flex;justify-content:flex-end;gap:12px;margin-top:10px">
+        <button type="button" class="btn-admin btn-ghost-admin" onclick="closeModal('user-modal')">Cancel</button>
+        <button type="submit" class="btn-admin btn-primary-admin">Create User</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script src="/admin/js/admin.js"></script>
+<script>
+  initSidebar();
+  loadUnreadCount();
+
+  let users = [];
+
+  async function loadUsers() {
+    try {
+      const res = await authFetch('/api/admin-users');
+      users = await res.json();
+      renderUsers();
+    } catch {
+      document.getElementById('users-tbody').innerHTML = '<tr><td colspan="5" style="text-align:center;color:var(--admin-red)">Failed to load admin users.</td></tr>';
+    }
+  }
+
+  function renderUsers() {
+    const tbody = document.getElementById('users-tbody');
+    if (!users.length) {
+      tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;color:var(--admin-text-muted);padding:40px">No users found.</td></tr>';
+      return;
+    }
+    tbody.innerHTML = users.map(u => `
+      <tr>
+        <td><div style="font-weight:700">${u.full_name || u.username}</div><div style="font-size:0.75rem;color:var(--admin-text-muted)">@${u.username}</div></td>
+        <td>${u.email || '—'}</td>
+        <td><span class="badge-status" style="background:rgba(255,255,255,0.06);color:var(--admin-text)">${(u.role || 'admin').replace('_', ' ')}</span></td>
+        <td><span class="badge-status ${u.is_active !== false ? 'published' : 'draft'}">${u.is_active !== false ? 'Active' : 'Disabled'}</span></td>
+        <td>
+          <button class="btn-admin btn-icon-admin btn-danger-admin" onclick="deleteUser(${u.id})">🗑️</button>
+        </td>
+      </tr>
+    `).join('');
+  }
+
+  document.getElementById('user-form').addEventListener('submit', async e => {
+    e.preventDefault();
+    const body = {
+      full_name: document.getElementById('user-fullname').value,
+      username: document.getElementById('user-username').value,
+      email: document.getElementById('user-email').value,
+      password: document.getElementById('user-password').value,
+      role: document.getElementById('user-role').value,
+    };
+    try {
+      const res = await authFetch('/api/admin-users', { method: 'POST', body: JSON.stringify(body) });
+      if (res?.ok) {
+        adminToast('Admin user created!');
+        closeModal('user-modal');
+        e.target.reset();
+        loadUsers();
+      } else {
+        const err = await res.json();
+        adminToast(err.error || 'Failed to create user', 'error');
+      }
+    } catch { adminToast('Error creating user', 'error'); }
+  });
+
+  async function deleteUser(id) {
+    if (!confirm('Delete this admin user?')) return;
+    try {
+      const res = await authFetch(`/api/admin-users/${id}`, { method: 'DELETE' });
+      if (res?.ok) { adminToast('User deleted'); loadUsers(); }
+      else { const err = await res.json(); adminToast(err.error || 'Delete failed', 'error'); }
+    } catch { adminToast('Delete failed', 'error'); }
+  }
+
+  loadUsers();
+</script>
+</body>
+</html>

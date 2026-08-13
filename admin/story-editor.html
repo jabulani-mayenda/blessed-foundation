@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Story Editor — Blessed Foundation Admin</title>
+  <link rel="stylesheet" href="/admin/css/admin.css">
+  <!-- Quill.js WYSIWYG Editor stylesheet -->
+  <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    .ql-toolbar.ql-snow { background: var(--admin-bg); border-color: var(--admin-border) !important; border-top-left-radius: 8px; border-top-right-radius: 8px; }
+    .ql-container.ql-snow { background: var(--admin-bg); border-color: var(--admin-border) !important; border-bottom-left-radius: 8px; border-bottom-right-radius: 8px; color: var(--admin-text); font-family: inherit; font-size: 0.95rem; min-height: 280px; }
+    .ql-stroke { stroke: var(--admin-text-muted) !important; }
+    .ql-fill { fill: var(--admin-text-muted) !important; }
+    .ql-picker { color: var(--admin-text-muted) !important; }
+  </style>
+</head>
+<body>
+<div class="admin-layout">
+  <aside class="sidebar" id="sidebar"></aside>
+
+  <main class="admin-main">
+    <div class="admin-topbar">
+      <div>
+        <h1 class="topbar-title" id="editor-title">New Story</h1>
+        <p style="font-size:0.85rem;color:var(--admin-text-muted)">Write articles like a Word document — no coding required</p>
+      </div>
+      <div class="topbar-actions">
+        <button type="button" class="btn-admin btn-secondary-admin" onclick="previewStory()">👁️ Preview Story</button>
+        <button type="button" class="btn-admin btn-secondary-admin" onclick="saveStory('draft')">Save Draft</button>
+        <button type="button" class="btn-admin btn-primary-admin" onclick="saveStory('published')">Publish Story</button>
+      </div>
+    </div>
+
+    <div class="admin-content">
+      <form id="story-editor-form" style="display:grid;grid-template-columns:2fr 1fr;gap:24px">
+        <!-- Main Writing Area -->
+        <div>
+          <div class="admin-card">
+            <div class="admin-form-group">
+              <label class="admin-label" for="story-title-input">Story Title</label>
+              <input class="admin-input" type="text" id="story-title-input" placeholder="e.g. A new opportunity to learn in Chikwawa" style="font-size:1.2rem;font-weight:700;padding:14px" required>
+            </div>
+
+            <div class="admin-form-group">
+              <label class="admin-label">Story Content</label>
+              <div id="editor-container"></div>
+              <div class="admin-helper-text">Format headings, paragraphs, bullet points, quotes and place photographs directly between paragraphs.</div>
+            </div>
+
+            <div class="admin-form-group">
+              <label class="admin-label" for="story-excerpt">Excerpt / Short Summary</label>
+              <textarea class="admin-textarea" id="story-excerpt" placeholder="Write a 1-2 sentence summary of this story to display on the homepage..."></textarea>
+            </div>
+          </div>
+        </div>
+
+        <!-- Sidebar Options -->
+        <div>
+          <div class="admin-card">
+            <h3 class="admin-card-title" style="margin-bottom:16px">Publishing & Metadata</h3>
+
+            <div class="admin-form-group">
+              <label class="admin-label" for="story-status-select">Status</label>
+              <select class="admin-select" id="story-status-select">
+                <option value="draft">Draft</option>
+                <option value="published">Published</option>
+                <option value="scheduled">Scheduled</option>
+              </select>
+            </div>
+
+            <div class="admin-form-group">
+              <label class="admin-label" for="story-category-select">Category</label>
+              <select class="admin-select" id="story-category-select">
+                <option value="Education">Education</option>
+                <option value="Community">Community</option>
+                <option value="Youth">Youth</option>
+                <option value="Families">Families</option>
+                <option value="General">General</option>
+              </select>
+            </div>
+
+            <div class="admin-form-group">
+              <label class="admin-label" for="story-author-input">Author</label>
+              <input class="admin-input" type="text" id="story-author-input" value="Blessed Foundation Team">
+            </div>
+
+            <div class="admin-form-group">
+              <label class="admin-label" for="story-date-input">Publish Date</label>
+              <input class="admin-input" type="date" id="story-date-input">
+            </div>
+
+            <div class="admin-form-group">
+              <label class="admin-label">Featured Image Cover</label>
+              <div id="cover-preview" style="background:var(--admin-bg);border:1px dashed var(--admin-border);border-radius:8px;padding:12px;text-align:center;margin-bottom:10px">
+                <span style="color:var(--admin-text-muted);font-size:0.85rem">No cover image selected</span>
+              </div>
+              <input type="hidden" id="cover-image-id">
+              <button type="button" class="btn-admin btn-secondary-admin" style="width:100%" onclick="openMediaPicker()">Choose Cover Image</button>
+            </div>
+
+            <div class="admin-form-group" style="margin-bottom:0">
+              <label style="font-size:0.85rem;cursor:pointer">
+                <input type="checkbox" id="story-featured-check"> Feature this story on Home Page
+              </label>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+  </main>
+</div>
+
+<!-- Media Picker Modal -->
+<div id="media-picker-modal" class="modal-overlay">
+  <div class="modal-body" style="max-width:700px">
+    <div class="modal-header">
+      <h3 style="font-size:1.1rem;font-weight:700">Choose Image from Media Library</h3>
+      <button class="btn-admin btn-ghost-admin" onclick="closeModal('media-picker-modal')">✕</button>
+    </div>
+    <div class="media-grid" id="picker-media-grid" style="max-height:400px;overflow-y:auto;padding-right:4px">
+      <!-- Media thumbnails -->
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.quilljs.com/1.3.6/quill.min.js"></script>
+<script src="/admin/js/admin.js"></script>
+<script>
+  initSidebar();
+  loadUnreadCount();
+
+  // Initialize Quill WYSIWYG Editor
+  const quill = new Quill('#editor-container', {
+    theme: 'snow',
+    modules: {
+      toolbar: [
+        [{ 'header': [1, 2, 3, false] }],
+        ['bold', 'italic', 'underline'],
+        [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+        ['blockquote', 'link', 'image'],
+        ['clean']
+      ]
+    },
+    placeholder: 'Start writing your story here...'
+  });
+
+  const urlParams = new URLSearchParams(window.location.search);
+  const storyId = urlParams.get('id');
+
+  if (storyId) {
+    document.getElementById('editor-title').textContent = 'Edit Story';
+    loadStoryData(storyId);
+  } else {
+    document.getElementById('story-date-input').value = new Date().toISOString().substring(0,10);
+  }
+
+  async function loadStoryData(id) {
+    try {
+      const res = await authFetch(`/api/posts?published_only=false`);
+      const stories = await res.json();
+      const story = stories.find(s => s.id == id);
+      if (story) {
+        document.getElementById('story-title-input').value = story.title;
+        document.getElementById('story-excerpt').value = story.excerpt || '';
+        document.getElementById('story-category-select').value = story.category || 'Education';
+        document.getElementById('story-author-input').value = story.author || 'Blessed Foundation Team';
+        document.getElementById('story-status-select').value = story.status || (story.is_published ? 'published' : 'draft');
+        document.getElementById('story-featured-check').checked = story.featured;
+        if (story.event_date) document.getElementById('story-date-input').value = story.event_date.substring(0,10);
+        if (story.body) quill.clipboard.dangerouslyPasteHTML(story.body);
+        if (story.cover_url) {
+          document.getElementById('cover-image-id').value = story.cover_image_id;
+          document.getElementById('cover-preview').innerHTML = `<img src="${story.cover_url}" style="max-height:120px;border-radius:6px">`;
+        }
+      }
+    } catch {}
+  }
+
+  async function saveStory(targetStatus) {
+    const title = document.getElementById('story-title-input').value.trim();
+    if (!title) { adminToast('Please enter a story title', 'error'); return; }
+
+    const bodyHtml = quill.root.innerHTML;
+    const excerpt = document.getElementById('story-excerpt').value;
+    const category = document.getElementById('story-category-select').value;
+    const author = document.getElementById('story-author-input').value;
+    const status = targetStatus || document.getElementById('story-status-select').value;
+    const featured = document.getElementById('story-featured-check').checked;
+    const cover_image_id = document.getElementById('cover-image-id').value || null;
+
+    const payload = {
+      title,
+      body: bodyHtml,
+      excerpt,
+      category,
+      author,
+      status,
+      is_published: status === 'published',
+      featured,
+      cover_image_id,
+    };
+
+    try {
+      const url = storyId ? `/api/posts/${storyId}` : '/api/posts';
+      const method = storyId ? 'PATCH' : 'POST';
+      const res = await authFetch(url, { method, body: JSON.stringify(payload) });
+      if (res?.ok) {
+        adminToast(status === 'published' ? 'Story published!' : 'Draft saved!');
+        setTimeout(() => window.location.href = '/admin/stories.html', 1000);
+      } else {
+        adminToast('Failed to save story', 'error');
+      }
+    } catch { adminToast('Save error', 'error'); }
+  }
+
+  function previewStory() {
+    const title = document.getElementById('story-title-input').value;
+    window.open(`/stories.html?preview=1&title=${encodeURIComponent(title)}`, '_blank');
+  }
+
+  // Media Picker Logic
+  async function openMediaPicker() {
+    openModal('media-picker-modal');
+    try {
+      const res = await authFetch('/api/gallery?visible_only=false');
+      const images = await res.json();
+      document.getElementById('picker-media-grid').innerHTML = images.map(img => `
+        <div class="media-item" onclick="selectCoverImage(${img.id}, '${img.url}')" style="cursor:pointer">
+          <img class="media-thumb" src="${img.url}" alt="">
+          <div class="media-info"><div class="media-title">${img.caption || img.filename}</div></div>
+        </div>
+      `).join('');
+    } catch {}
+  }
+
+  function selectCoverImage(id, url) {
+    document.getElementById('cover-image-id').value = id;
+    document.getElementById('cover-preview').innerHTML = `<img src="${url}" style="max-height:120px;border-radius:6px">`;
+    closeModal('media-picker-modal');
+  }
+</script>
+</body>
+</html>

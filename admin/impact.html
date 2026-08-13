@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Impact Statistics — Blessed Foundation Admin</title>
+  <link rel="stylesheet" href="/admin/css/admin.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+<div class="admin-layout">
+  <aside class="sidebar" id="sidebar"></aside>
+
+  <main class="admin-main">
+    <div class="admin-topbar">
+      <div>
+        <h1 class="topbar-title">Impact Statistics</h1>
+        <p style="font-size:0.85rem;color:var(--admin-text-muted)">Update verified impact numbers without touching code</p>
+      </div>
+      <div class="topbar-actions">
+        <button class="btn-admin btn-primary-admin" onclick="openModal('impact-modal')">
+          + Add Impact Number
+        </button>
+      </div>
+    </div>
+
+    <div class="admin-content">
+      <div class="admin-table-container">
+        <table class="admin-table">
+          <thead>
+            <tr>
+              <th style="width:100px">Number</th>
+              <th>Label</th>
+              <th>Description</th>
+              <th>Display Location</th>
+              <th style="width:100px">Actions</th>
+            </tr>
+          </thead>
+          <tbody id="impact-tbody">
+            <tr><td colspan="5" style="text-align:center;color:var(--admin-text-muted);padding:40px">Loading stats…</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </main>
+</div>
+
+<!-- Impact Modal -->
+<div id="impact-modal" class="modal-overlay">
+  <div class="modal-body">
+    <div class="modal-header">
+      <h3 style="font-size:1.1rem;font-weight:700" id="impact-modal-title">New Impact Number</h3>
+      <button class="btn-admin btn-ghost-admin" onclick="closeModal('impact-modal')">✕</button>
+    </div>
+
+    <form id="impact-form">
+      <input type="hidden" id="imp-id">
+      <div style="display:grid;grid-template-columns:1fr 2fr;gap:16px">
+        <div class="admin-form-group">
+          <label class="admin-label" for="imp-number">Number Value</label>
+          <input class="admin-input" type="text" id="imp-number" placeholder="e.g. 1,450+" required>
+        </div>
+        <div class="admin-form-group">
+          <label class="admin-label" for="imp-label">Label</label>
+          <input class="admin-input" type="text" id="imp-label" placeholder="e.g. People Supported" required>
+        </div>
+      </div>
+
+      <div class="admin-form-group">
+        <label class="admin-label" for="imp-desc">Description</label>
+        <input class="admin-input" type="text" id="imp-desc" placeholder="e.g. Individuals reached through our educational initiatives">
+      </div>
+
+      <div class="admin-form-group">
+        <label class="admin-label" for="imp-display">Display Location</label>
+        <select class="admin-select" id="imp-display">
+          <option value="both">Home Page & Impact Page</option>
+          <option value="home">Home Page Only</option>
+          <option value="impact">Impact Page Only</option>
+        </select>
+      </div>
+
+      <div style="display:flex;justify-content:flex-end;gap:12px;margin-top:10px">
+        <button type="button" class="btn-admin btn-ghost-admin" onclick="closeModal('impact-modal')">Cancel</button>
+        <button type="submit" class="btn-admin btn-primary-admin">Save Impact Number</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script src="/admin/js/admin.js"></script>
+<script>
+  initSidebar();
+  loadUnreadCount();
+
+  let stats = [];
+
+  async function loadImpactStats() {
+    try {
+      const res = await authFetch('/api/impact/all');
+      stats = await res.json();
+      renderStats();
+    } catch {
+      document.getElementById('impact-tbody').innerHTML = '<tr><td colspan="5" style="text-align:center;color:var(--admin-red)">Failed to load impact stats.</td></tr>';
+    }
+  }
+
+  function renderStats() {
+    const tbody = document.getElementById('impact-tbody');
+    if (!stats.length) {
+      tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;color:var(--admin-text-muted);padding:40px">No impact stats created yet.</td></tr>';
+      return;
+    }
+    tbody.innerHTML = stats.map(s => `
+      <tr>
+        <td><strong style="font-size:1.2rem;color:var(--admin-green-light)">${s.number_value}</strong></td>
+        <td><div style="font-weight:700">${s.label}</div></td>
+        <td style="color:var(--admin-text-muted)">${s.description || '—'}</td>
+        <td><span class="badge-status" style="background:rgba(255,255,255,0.06);color:var(--admin-text)">${s.display_on}</span></td>
+        <td>
+          <div style="display:flex;gap:6px">
+            <button class="btn-admin btn-icon-admin btn-ghost-admin" onclick="editImpact(${s.id})">✏️</button>
+            <button class="btn-admin btn-icon-admin btn-danger-admin" onclick="deleteImpact(${s.id})">🗑️</button>
+          </div>
+        </td>
+      </tr>
+    `).join('');
+  }
+
+  function editImpact(id) {
+    const s = stats.find(x => x.id === id);
+    if (!s) return;
+    document.getElementById('imp-id').value = s.id;
+    document.getElementById('imp-number').value = s.number_value;
+    document.getElementById('imp-label').value = s.label;
+    document.getElementById('imp-desc').value = s.description || '';
+    document.getElementById('imp-display').value = s.display_on || 'both';
+    openModal('impact-modal');
+  }
+
+  document.getElementById('impact-form').addEventListener('submit', async e => {
+    e.preventDefault();
+    const id = document.getElementById('imp-id').value;
+    const body = {
+      number_value: document.getElementById('imp-number').value,
+      label: document.getElementById('imp-label').value,
+      description: document.getElementById('imp-desc').value,
+      display_on: document.getElementById('imp-display').value,
+    };
+    try {
+      const url = id ? `/api/impact/${id}` : '/api/impact';
+      const method = id ? 'PATCH' : 'POST';
+      const res = await authFetch(url, { method, body: JSON.stringify(body) });
+      if (res?.ok) {
+        adminToast('Impact statistic saved!');
+        closeModal('impact-modal');
+        e.target.reset();
+        loadImpactStats();
+      }
+    } catch { adminToast('Error saving impact stat', 'error'); }
+  });
+
+  async function deleteImpact(id) {
+    if (!confirm('Delete this impact number?')) return;
+    try {
+      const res = await authFetch(`/api/impact/${id}`, { method: 'DELETE' });
+      if (res?.ok) { adminToast('Deleted'); loadImpactStats(); }
+    } catch { adminToast('Delete failed', 'error'); }
+  }
+
+  loadImpactStats();
+</script>
+</body>
+</html>

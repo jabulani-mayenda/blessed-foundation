@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Reports & Documents — Blessed Foundation Admin</title>
+  <link rel="stylesheet" href="/admin/css/admin.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+<div class="admin-layout">
+  <aside class="sidebar" id="sidebar"></aside>
+
+  <main class="admin-main">
+    <div class="admin-topbar">
+      <div>
+        <h1 class="topbar-title">Reports & Transparency Documents</h1>
+        <p style="font-size:0.85rem;color:var(--admin-text-muted)">Publish annual reports, financial statements, and governance certificates</p>
+      </div>
+      <div class="topbar-actions">
+        <button class="btn-admin btn-primary-admin" onclick="openModal('doc-modal')">
+          + Upload Document
+        </button>
+      </div>
+    </div>
+
+    <div class="admin-content">
+      <div class="admin-table-container">
+        <table class="admin-table">
+          <thead>
+            <tr>
+              <th>Document Title</th>
+              <th>Category</th>
+              <th>Year</th>
+              <th>File Name</th>
+              <th>Status</th>
+              <th style="width:100px">Actions</th>
+            </tr>
+          </thead>
+          <tbody id="docs-tbody">
+            <tr><td colspan="6" style="text-align:center;color:var(--admin-text-muted);padding:40px">Loading documents…</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </main>
+</div>
+
+<!-- Document Modal -->
+<div id="doc-modal" class="modal-overlay">
+  <div class="modal-body">
+    <div class="modal-header">
+      <h3 style="font-size:1.1rem;font-weight:700">Upload Public Document</h3>
+      <button class="btn-admin btn-ghost-admin" onclick="closeModal('doc-modal')">✕</button>
+    </div>
+
+    <form id="doc-form">
+      <div class="admin-form-group">
+        <label class="admin-label" for="doc-title">Document Title</label>
+        <input class="admin-input" type="text" id="doc-title" placeholder="e.g. Annual Report 2025" required>
+      </div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+        <div class="admin-form-group">
+          <label class="admin-label" for="doc-category">Category</label>
+          <select class="admin-select" id="doc-category">
+            <option value="Annual Report">Annual Report</option>
+            <option value="Financial Statement">Financial Statement</option>
+            <option value="Policy Document">Policy Document</option>
+            <option value="Certificate">Certificate</option>
+          </select>
+        </div>
+        <div class="admin-form-group">
+          <label class="admin-label" for="doc-year">Report Year</label>
+          <input class="admin-input" type="number" id="doc-year" value="2026">
+        </div>
+      </div>
+
+      <div class="admin-form-group">
+        <label class="admin-label" for="doc-url">Document URL / Link</label>
+        <input class="admin-input" type="text" id="doc-url" placeholder="https://..." required>
+      </div>
+
+      <div style="display:flex;justify-content:flex-end;gap:12px;margin-top:10px">
+        <button type="button" class="btn-admin btn-ghost-admin" onclick="closeModal('doc-modal')">Cancel</button>
+        <button type="submit" class="btn-admin btn-primary-admin">Save Document</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script src="/admin/js/admin.js"></script>
+<script>
+  initSidebar();
+  loadUnreadCount();
+
+  let docs = [];
+
+  async function loadDocs() {
+    try {
+      const res = await authFetch('/api/documents/all');
+      docs = await res.json();
+      renderDocs();
+    } catch {
+      document.getElementById('docs-tbody').innerHTML = '<tr><td colspan="6" style="text-align:center;color:var(--admin-red)">Failed to load documents.</td></tr>';
+    }
+  }
+
+  function renderDocs() {
+    const tbody = document.getElementById('docs-tbody');
+    if (!docs.length) {
+      tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;color:var(--admin-text-muted);padding:40px">No documents published yet.</td></tr>';
+      return;
+    }
+    tbody.innerHTML = docs.map(d => `
+      <tr>
+        <td><div style="font-weight:700">${d.title}</div></td>
+        <td>${d.category}</td>
+        <td>${d.year || 2026}</td>
+        <td><a href="${d.file_url}" target="_blank" style="color:var(--admin-green-light)">${d.file_name || 'Download PDF'}</a></td>
+        <td><span class="badge-status ${d.is_published ? 'published' : 'draft'}">${d.is_published ? 'Published' : 'Draft'}</span></td>
+        <td>
+          <button class="btn-admin btn-icon-admin btn-danger-admin" onclick="deleteDoc(${d.id})">🗑️</button>
+        </td>
+      </tr>
+    `).join('');
+  }
+
+  document.getElementById('doc-form').addEventListener('submit', async e => {
+    e.preventDefault();
+    const body = {
+      title: document.getElementById('doc-title').value,
+      category: document.getElementById('doc-category').value,
+      year: parseInt(document.getElementById('doc-year').value) || 2026,
+      file_url: document.getElementById('doc-url').value,
+      file_name: document.getElementById('doc-title').value + '.pdf',
+    };
+    try {
+      const res = await authFetch('/api/documents', { method: 'POST', body: JSON.stringify(body) });
+      if (res?.ok) {
+        adminToast('Document published!');
+        closeModal('doc-modal');
+        e.target.reset();
+        loadDocs();
+      }
+    } catch { adminToast('Error uploading document', 'error'); }
+  });
+
+  async function deleteDoc(id) {
+    if (!confirm('Delete this document?')) return;
+    try {
+      const res = await authFetch(`/api/documents/${id}`, { method: 'DELETE' });
+      if (res?.ok) { adminToast('Document deleted'); loadDocs(); }
+    } catch { adminToast('Delete failed', 'error'); }
+  }
+
+  loadDocs();
+</script>
+</body>
+</html>

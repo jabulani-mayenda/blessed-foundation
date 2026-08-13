@@ -25,13 +25,57 @@ async function loadSiteSettings() {
   }
 }
 
+// ─── Dynamic Navigation Loader ───
+async function loadDynamicNav() {
+  const menu = document.getElementById('nav-menu');
+  if (!menu) return;
+  try {
+    const res = await fetch(`${API}/api/nav`);
+    if (!res.ok) return;
+    const items = await res.json();
+    if (!items || !items.length) return;
+
+    const path = window.location.pathname;
+    menu.innerHTML = items.map(item => {
+      const isAct = (item.href !== '/' && path.includes(item.href.replace('.html', ''))) || ((path === '/' || path === '/index.html') && (item.href === '/' || item.href === 'index.html'));
+      if (item.is_cta) {
+        return `<a href="${item.href}" class="nav-btn-donate">${item.label}</a>`;
+      }
+      return `<a href="${item.href}" class="nav-link ${isAct ? 'active' : ''}">${item.label}</a>`;
+    }).join('');
+  } catch {}
+}
+
+// ─── Dynamic Footer Loader ───
+async function loadDynamicFooter() {
+  try {
+    const res = await fetch(`${API}/api/footer`);
+    if (!res.ok) return;
+    const f = await res.json();
+    if (!f) return;
+
+    const descEl = document.querySelector('.footer-desc');
+    if (descEl && f.description) descEl.textContent = f.description;
+
+    const copyEl = document.querySelector('.footer-copyright');
+    if (copyEl && f.copyright_text) copyEl.textContent = f.copyright_text;
+
+    const phoneEl = document.querySelector('[data-footer-phone]');
+    if (phoneEl && f.phone) phoneEl.textContent = f.phone;
+
+    const emailEl = document.querySelector('[data-footer-email]');
+    if (emailEl && f.email) emailEl.textContent = f.email;
+
+    const addrEl = document.querySelector('[data-footer-address]');
+    if (addrEl && f.address) addrEl.textContent = f.address;
+  } catch {}
+}
+
 // ─── Section Image Hydration ───
-// Any element with data-section-img="key" gets replaced with admin-uploaded image for that key
 async function loadSectionImages() {
   const targets = document.querySelectorAll('[data-section-img]');
   if (!targets.length) return;
 
-  // Batch fetch all needed section keys
   const keys = [...new Set([...targets].map(el => el.dataset.sectionImg))];
 
   await Promise.all(keys.map(async key => {
@@ -46,17 +90,15 @@ async function loadSectionImages() {
           el.src = img.url;
           if (img.alt_text) el.alt = img.alt_text;
         } else {
-          // Background image container
           el.style.backgroundImage = `url('${img.url}')`;
         }
-        // Set caption if sibling exists
         const captionEl = el.closest('[data-section-wrap]')?.querySelector('[data-section-caption]');
         if (captionEl && img.caption) {
           captionEl.textContent = img.caption;
           captionEl.style.display = 'block';
         }
       });
-    } catch { /* silent fail */ }
+    } catch { }
   }));
 }
 
@@ -97,7 +139,6 @@ function initNavigation() {
       toggle.setAttribute('aria-expanded', isOpen);
     });
 
-    // Close on outside click
     document.addEventListener('click', e => {
       if (!toggle.contains(e.target) && !menu.contains(e.target)) {
         menu.classList.remove('open');
@@ -105,30 +146,12 @@ function initNavigation() {
       }
     });
   }
-
-  // Active link detection
-  const path = window.location.pathname;
-  document.querySelectorAll('.nav-link').forEach(link => {
-    const href = link.getAttribute('href');
-    if (!href) return;
-    if (href !== '/' && path.includes(href.replace('.html', ''))) {
-      link.classList.add('active');
-    } else if ((path === '/' || path === '/index.html') && (href === '/' || href === 'index.html')) {
-      link.classList.add('active');
-    }
-  });
 }
 
 // ─── Load Latest Stories ───
 async function loadStories(containerId, limit) {
   const container = document.getElementById(containerId);
   if (!container) return;
-
-  const coverImages = [
-    'https://images.unsplash.com/photo-1509099836639-18ba1795216d?w=600&q=80',
-    'https://images.unsplash.com/photo-1542810634-71277d95dcbb?w=600&q=80',
-    'https://images.unsplash.com/photo-1531206715517-5c0ba140b2b8?w=600&q=80',
-  ];
 
   try {
     let url = `${API}/api/posts`;
@@ -150,7 +173,7 @@ async function loadStories(containerId, limit) {
       return `
         <article class="magazine-item fade-in">
           <div class="magazine-img">
-            <img src="${s.cover_url || coverImages[i % coverImages.length]}" alt="${s.title}" loading="lazy">
+            <img src="${s.cover_url || 'https://images.unsplash.com/photo-1509099836639-18ba1795216d?w=600&q=80'}" alt="${s.title}" loading="lazy">
           </div>
           <div class="magazine-content">
             <span class="magazine-tag">${s.category || 'COMMUNITY'}</span>
@@ -162,7 +185,6 @@ async function loadStories(containerId, limit) {
         </article>`;
     }).join('');
 
-    // Trigger fade-in for newly added items
     requestAnimationFrame(() => initScrollAnimations());
   } catch (err) {
     container.innerHTML = `
@@ -172,9 +194,8 @@ async function loadStories(containerId, limit) {
   }
 }
 
-// ─── Stories Page: single story view + filter ───
+// ─── Stories Page ───
 async function initStoriesPage() {
-  // If a slug is in the URL, show single story
   const slug = new URLSearchParams(window.location.search).get('slug');
   if (slug) {
     const container = document.getElementById('story-detail');
@@ -202,7 +223,6 @@ async function initStoriesPage() {
     return;
   }
 
-  // Otherwise load all stories with filter
   const grid = document.getElementById('stories-grid');
   if (!grid) return;
 
@@ -210,25 +230,18 @@ async function initStoriesPage() {
     const res = await fetch(`${API}/api/posts`);
     const stories = await res.json();
 
-    const coverImages = [
-      'https://images.unsplash.com/photo-1509099836639-18ba1795216d?w=600&q=80',
-      'https://images.unsplash.com/photo-1542810634-71277d95dcbb?w=600&q=80',
-      'https://images.unsplash.com/photo-1531206715517-5c0ba140b2b8?w=600&q=80',
-      'https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?w=600&q=80',
-    ];
-
     function renderStories(filter) {
       const filtered = filter === 'all' ? stories : stories.filter(s => (s.category || '').toLowerCase() === filter.toLowerCase());
       if (!filtered.length) {
         grid.innerHTML = `<div style="grid-column:1/-1;text-align:center;padding:60px 0"><p style="color:var(--text-muted)">No stories in this category yet.</p></div>`;
         return;
       }
-      grid.innerHTML = filtered.map((s, i) => {
+      grid.innerHTML = filtered.map((s) => {
         const date = s.created_at ? new Date(s.created_at).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' }) : '';
         return `
           <article class="magazine-item fade-in">
             <div class="magazine-img">
-              <img src="${s.cover_url || coverImages[i % coverImages.length]}" alt="${s.title}" loading="lazy">
+              <img src="${s.cover_url || 'https://images.unsplash.com/photo-1509099836639-18ba1795216d?w=600&q=80'}" alt="${s.title}" loading="lazy">
             </div>
             <div class="magazine-content">
               <span class="magazine-tag">${s.category || 'COMMUNITY'}</span>
@@ -244,7 +257,6 @@ async function initStoriesPage() {
 
     renderStories('all');
 
-    // Wire up filter buttons
     document.querySelectorAll('.filter-btn').forEach(btn => {
       btn.addEventListener('click', () => {
         document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
@@ -348,7 +360,7 @@ function initDonationComponent() {
       amount: parseFloat(amountVal),
       frequency: freqInput ? freqInput.value : 'one-time',
       designation: document.getElementById('donation-designation')?.value || 'Where needed most',
-      payment_method: document.getElementById('payment-method')?.value || 'Mobile Money',
+      payment_method: document.getElementById('payment-method')?.value || 'Paychangu Mobile Money',
     };
 
     try {
@@ -366,7 +378,7 @@ function initDonationComponent() {
             <div style="padding:28px;background:var(--warm-offwhite);border:1px solid var(--muted-beige);border-radius:var(--radius-md);margin-top:20px;text-align:center">
               <h3 style="font-family:var(--font-serif);margin-bottom:8px">Thank you for your support.</h3>
               <p style="color:var(--text-muted);font-size:0.95rem">${json.message || 'Your contribution has been received.'}</p>
-              <p style="font-size:0.82rem;color:var(--earthy-brown);margin-top:12px">Reference: #BF-DON-${Date.now().toString().slice(-6)}</p>
+              <p style="font-size:0.82rem;color:var(--earthy-brown);margin-top:12px">Reference: ${json.donation?.reference || 'BFM-DON'}</p>
             </div>`;
         }
         form.reset();
@@ -391,12 +403,13 @@ function initDonationComponent() {
 // ─── Init ───
 document.addEventListener('DOMContentLoaded', () => {
   loadSiteSettings();
+  loadDynamicNav();
+  loadDynamicFooter();
   loadSectionImages();
   initNavigation();
   initScrollHeader();
   initContactForm();
   initDonationComponent();
   initStoriesPage();
-  // Small delay so DOM content is rendered before observing
   setTimeout(initScrollAnimations, 100);
 });

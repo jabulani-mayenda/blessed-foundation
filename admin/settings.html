@@ -3,144 +3,163 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Site Settings — Admin</title>
+  <title>Website & Footer Settings — Blessed Foundation Admin</title>
   <link rel="stylesheet" href="/admin/css/admin.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 </head>
 <body>
 <div class="admin-layout">
-  <aside class="sidebar">
-    <div class="sidebar-header"><div class="sidebar-logo"><div class="sidebar-logo-icon">🌿</div><div><div class="sidebar-logo-name">Stitch Malawi</div><div class="sidebar-logo-sub">Admin Panel</div></div></div></div>
-    <nav class="sidebar-nav">
-      <div class="sidebar-section-label">Overview</div>
-      <a href="/admin/dashboard.html" class="sidebar-link"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>Dashboard</a>
-      <div class="sidebar-section-label">Content</div>
-      <a href="/admin/gallery.html" class="sidebar-link"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>Gallery</a>
-      <a href="/admin/posts.html" class="sidebar-link"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>News & Events</a>
-      <a href="/admin/programs.html" class="sidebar-link"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>Programs</a>
-      <a href="/admin/team.html" class="sidebar-link"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>Team</a>
-      <div class="sidebar-section-label">Communication</div>
-      <a href="/admin/messages.html" class="sidebar-link"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>Messages<span class="badge" id="unread-badge" style="display:none">0</span></a>
-      <div class="sidebar-section-label">Configuration</div>
-      <a href="/admin/settings.html" class="sidebar-link"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93l-1.41 1.41M4.93 4.93l1.41 1.41M19.07 19.07l-1.41-1.41M4.93 19.07l1.41-1.41M12 2v2m0 18v-2m10-8h-2M4 12H2"/></svg>Site Settings</a>
-      <a href="/" class="sidebar-link" target="_blank"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>View Public Site</a>
-    </nav>
-    <div class="sidebar-footer">
-      <div class="sidebar-user"><div class="sidebar-avatar" id="sidebar-avatar">A</div><div><div class="sidebar-username" id="sidebar-username">Admin</div><div class="sidebar-role">Administrator</div></div></div>
-      <button id="logout-btn" class="btn-admin btn-ghost-admin" style="width:100%;justify-content:center"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>Sign Out</button>
-    </div>
-  </aside>
+  <aside class="sidebar" id="sidebar"></aside>
 
   <main class="admin-main">
     <div class="admin-topbar">
-      <h1 class="topbar-title">Site Settings & Configuration</h1>
+      <div>
+        <h1 class="topbar-title">Website Settings</h1>
+        <p style="font-size:0.85rem;color:var(--admin-text-muted)">Manage branding, navigation, footer, social links and SEO</p>
+      </div>
     </div>
+
     <div class="admin-content">
-      <form id="settings-form">
-        <!-- General Info -->
-        <div class="admin-form-card">
-          <h2 class="admin-form-title">General Site Information</h2>
-          <div class="admin-form-row">
-            <div class="admin-form-group">
-              <label class="admin-label">Foundation Name</label>
-              <input class="admin-input" type="text" data-setting-key="site_name">
-            </div>
-            <div class="admin-form-group">
-              <label class="admin-label">Tagline</label>
-              <input class="admin-input" type="text" data-setting-key="tagline">
-            </div>
-          </div>
-        </div>
+      <!-- Tabs -->
+      <div class="admin-tabs">
+        <button class="tab-btn active" onclick="showTab('general-tab')">Branding & Info</button>
+        <button class="tab-btn" onclick="showTab('header-tab')">Header Navigation</button>
+        <button class="tab-btn" onclick="showTab('footer-tab')">Footer Editor</button>
+        <button class="tab-btn" onclick="showTab('seo-tab')">SEO Settings</button>
+      </div>
 
-        <!-- Hero Section Settings -->
-        <div class="admin-form-card">
-          <h2 class="admin-form-title">Hero Section Text</h2>
-          <div class="admin-form-group">
-            <label class="admin-label">Hero Main Heading</label>
-            <input class="admin-input" type="text" data-setting-key="hero_heading">
+      <!-- Tab 1: Branding -->
+      <div id="general-tab" class="tab-content">
+        <form id="general-settings-form" class="admin-card">
+          <div class="admin-card-header">
+            <h3 class="admin-card-title">Organisation Details</h3>
           </div>
           <div class="admin-form-group">
-            <label class="admin-label">Hero Subtext</label>
-            <textarea class="admin-textarea" data-setting-key="hero_subtext" style="min-height:80px"></textarea>
-          </div>
-        </div>
-
-        <!-- Impact Statistics -->
-        <div class="admin-form-card">
-          <h2 class="admin-form-title">Impact Statistics</h2>
-          <div class="admin-form-row">
-            <div class="admin-form-group">
-              <label class="admin-label">Communities Reached</label>
-              <input class="admin-input" type="text" data-setting-key="stats_communities">
-            </div>
-            <div class="admin-form-group">
-              <label class="admin-label">Beneficiaries Impacted</label>
-              <input class="admin-input" type="text" data-setting-key="stats_beneficiaries">
-            </div>
-          </div>
-          <div class="admin-form-row">
-            <div class="admin-form-group">
-              <label class="admin-label">Active Programs</label>
-              <input class="admin-input" type="text" data-setting-key="stats_programs">
-            </div>
-            <div class="admin-form-group">
-              <label class="admin-label">Years of Service</label>
-              <input class="admin-input" type="text" data-setting-key="stats_years">
-            </div>
-          </div>
-        </div>
-
-        <!-- Contact Information -->
-        <div class="admin-form-card">
-          <h2 class="admin-form-title">Contact Information & Links</h2>
-          <div class="admin-form-row">
-            <div class="admin-form-group">
-              <label class="admin-label">Contact Email</label>
-              <input class="admin-input" type="email" data-setting-key="contact_email">
-            </div>
-            <div class="admin-form-group">
-              <label class="admin-label">Contact Phone</label>
-              <input class="admin-input" type="text" data-setting-key="contact_phone">
-            </div>
+            <label class="admin-label">Organisation Name</label>
+            <input class="admin-input" type="text" data-key="site_name" value="Blessed Foundation Malawi">
           </div>
           <div class="admin-form-group">
-            <label class="admin-label">Address</label>
-            <input class="admin-input" type="text" data-setting-key="contact_address">
+            <label class="admin-label">Short Name</label>
+            <input class="admin-input" type="text" data-key="short_name" value="Blessed Foundation">
           </div>
-          <div class="admin-form-row">
+          <div class="admin-form-group">
+            <label class="admin-label">Tagline</label>
+            <input class="admin-input" type="text" data-key="tagline" value="Building hope. Changing lives.">
+          </div>
+          <div class="admin-form-group">
+            <label class="admin-label">Organisation Description</label>
+            <textarea class="admin-textarea" data-key="org_description">Blessed Foundation Malawi is a community-focused organisation working to support people, strengthen communities and create opportunities for a better future.</textarea>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px">
+            <div class="admin-form-group">
+              <label class="admin-label">Primary Brand Colour</label>
+              <input class="admin-input" type="color" data-key="primary_color" value="#3F4A32" style="height:44px;padding:4px">
+              <div class="admin-helper-text">Recommended: Army Green (#3F4A32)</div>
+            </div>
+            <div class="admin-form-group">
+              <label class="admin-label">Secondary Brand Colour</label>
+              <input class="admin-input" type="color" data-key="secondary_color" value="#F6F4EC" style="height:44px;padding:4px">
+              <div class="admin-helper-text">Recommended: Warm Off-White (#F6F4EC)</div>
+            </div>
+          </div>
+          <button type="submit" class="btn-admin btn-primary-admin">Save Branding Settings</button>
+        </form>
+      </div>
+
+      <!-- Tab 2: Header Navigation -->
+      <div id="header-tab" class="tab-content" style="display:none">
+        <div class="admin-card">
+          <div class="admin-card-header">
+            <h3 class="admin-card-title">Header Navigation Menu</h3>
+            <button class="btn-admin btn-secondary-admin" onclick="addNavItem()">+ Add Link</button>
+          </div>
+          <p style="font-size:0.85rem;color:var(--admin-text-muted);margin-bottom:16px">
+            Change link labels, targets, order, or visibility without asking a programmer.
+          </p>
+          <div id="nav-items-list">
+            <!-- Dynamic nav items -->
+          </div>
+          <button class="btn-admin btn-primary-admin" style="margin-top:16px" onclick="saveNavItems()">Save Navigation Menu</button>
+        </div>
+      </div>
+
+      <!-- Tab 3: Footer Editor -->
+      <div id="footer-tab" class="tab-content" style="display:none">
+        <form id="footer-settings-form" class="admin-card">
+          <div class="admin-card-header">
+            <h3 class="admin-card-title">Footer Settings & Social Media</h3>
+          </div>
+          <div class="admin-form-group">
+            <label class="admin-label">Footer Description</label>
+            <textarea class="admin-textarea" id="foot-desc">We work alongside communities to create opportunities and build a better future for Malawi.</textarea>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px">
+            <div class="admin-form-group">
+              <label class="admin-label">Phone</label>
+              <input class="admin-input" type="text" id="foot-phone" value="+265 990 58 08 53">
+            </div>
+            <div class="admin-form-group">
+              <label class="admin-label">Email</label>
+              <input class="admin-input" type="email" id="foot-email" value="info@blessedfoundation.mw">
+            </div>
+            <div class="admin-form-group">
+              <label class="admin-label">Address</label>
+              <input class="admin-input" type="text" id="foot-address" value="Blantyre, Malawi">
+            </div>
+          </div>
+
+          <h4 style="font-size:0.95rem;font-weight:700;margin:20px 0 12px">Social Media Links</h4>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
             <div class="admin-form-group">
               <label class="admin-label">Facebook URL</label>
-              <input class="admin-input" type="text" data-setting-key="facebook_url">
-            </div>
-            <div class="admin-form-group">
-              <label class="admin-label">Twitter / X URL</label>
-              <input class="admin-input" type="text" data-setting-key="twitter_url">
+              <input class="admin-input" type="text" id="foot-fb" placeholder="https://facebook.com/...">
             </div>
             <div class="admin-form-group">
               <label class="admin-label">Instagram URL</label>
-              <input class="admin-input" type="text" data-setting-key="instagram_url">
+              <input class="admin-input" type="text" id="foot-ig" placeholder="https://instagram.com/...">
             </div>
+            <div class="admin-form-group">
+              <label class="admin-label">TikTok URL</label>
+              <input class="admin-input" type="text" id="foot-tiktok" placeholder="https://tiktok.com/@...">
+            </div>
+            <div class="admin-form-group">
+              <label class="admin-label">LinkedIn URL</label>
+              <input class="admin-input" type="text" id="foot-linkedin" placeholder="https://linkedin.com/in/...">
+            </div>
+            <div class="admin-form-group">
+              <label class="admin-label">YouTube URL</label>
+              <input class="admin-input" type="text" id="foot-yt" placeholder="https://youtube.com/...">
+            </div>
+            <div class="admin-form-group">
+              <label class="admin-label">X / Twitter URL</label>
+              <input class="admin-input" type="text" id="foot-twitter" placeholder="https://x.com/...">
+            </div>
+          </div>
+
+          <div class="admin-form-group">
+            <label class="admin-label">Copyright Notice</label>
+            <input class="admin-input" type="text" id="foot-copyright" value="© 2026 Blessed Foundation Malawi. All rights reserved.">
+          </div>
+
+          <button type="submit" class="btn-admin btn-primary-admin">Save Footer Settings</button>
+        </form>
+      </div>
+
+      <!-- Tab 4: SEO Settings -->
+      <div id="seo-tab" class="tab-content" style="display:none">
+        <div class="admin-card">
+          <div class="admin-card-header">
+            <h3 class="admin-card-title">Search Engine & Social Media Sharing (SEO)</h3>
+          </div>
+          <p style="font-size:0.85rem;color:var(--admin-text-muted);margin-bottom:20px">
+            Customize search result titles and descriptions that appear when people search on Google or share your pages on WhatsApp/Facebook.
+          </p>
+          <div id="seo-pages-list">
+            <!-- Dynamic SEO items -->
           </div>
         </div>
-
-        <button type="submit" class="btn-admin btn-primary-admin" style="font-size:1rem;padding:12px 32px">Save Settings</button>
-      </form>
-
-      <!-- Change Password Section -->
-      <div class="admin-form-card" style="margin-top:40px">
-        <h2 class="admin-form-title">Change Admin Password</h2>
-        <form id="password-form">
-          <div class="admin-form-row">
-            <div class="admin-form-group">
-              <label class="admin-label">Current Password</label>
-              <input class="admin-input" type="password" id="pw-current" required>
-            </div>
-            <div class="admin-form-group">
-              <label class="admin-label">New Password (min 6 chars)</label>
-              <input class="admin-input" type="password" id="pw-new" required minlength="6">
-            </div>
-          </div>
-          <button type="submit" class="btn-admin btn-ghost-admin">Update Password</button>
-        </form>
       </div>
     </div>
   </main>
@@ -150,26 +169,162 @@
 <script>
   initSidebar();
   loadUnreadCount();
-  initSettingsAdmin();
 
-  document.getElementById('password-form')?.addEventListener('submit', async e => {
-    e.preventDefault();
-    const currentPassword = document.getElementById('pw-current').value;
-    const newPassword = document.getElementById('pw-new').value;
+  function showTab(id) {
+    document.querySelectorAll('.tab-content').forEach(el => el.style.display = 'none');
+    document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+    document.getElementById(id).style.display = 'block';
+    event.target.classList.add('active');
+  }
+
+  // Load General Settings
+  async function loadGeneral() {
     try {
-      const res = await authFetch('/api/auth/change-password', {
-        method: 'POST',
-        body: JSON.stringify({ currentPassword, newPassword }),
+      const res = await fetch('/api/settings');
+      const data = await res.json();
+      document.querySelectorAll('[data-key]').forEach(el => {
+        const k = el.dataset.key;
+        if (data[k] !== undefined) el.value = data[k];
       });
-      if (res?.ok) {
-        adminToast('Password updated successfully!');
-        document.getElementById('password-form').reset();
-      } else {
-        const d = await res.json();
-        adminToast(d.error || 'Password update failed', 'error');
-      }
-    } catch { adminToast('Error updating password', 'error'); }
+    } catch {}
+  }
+
+  document.getElementById('general-settings-form').addEventListener('submit', async e => {
+    e.preventDefault();
+    const settings = {};
+    document.querySelectorAll('[data-key]').forEach(el => settings[el.dataset.key] = el.value);
+    try {
+      const res = await authFetch('/api/settings', { method: 'PUT', body: JSON.stringify(settings) });
+      if (res?.ok) adminToast('Branding settings saved!');
+    } catch { adminToast('Error', 'error'); }
   });
+
+  // Load Footer
+  async function loadFooter() {
+    try {
+      const res = await fetch('/api/footer');
+      const f = await res.json();
+      if (f.description) document.getElementById('foot-desc').value = f.description;
+      if (f.phone) document.getElementById('foot-phone').value = f.phone;
+      if (f.email) document.getElementById('foot-email').value = f.email;
+      if (f.address) document.getElementById('foot-address').value = f.address;
+      if (f.facebook_url) document.getElementById('foot-fb').value = f.facebook_url;
+      if (f.instagram_url) document.getElementById('foot-ig').value = f.instagram_url;
+      if (f.tiktok_url) document.getElementById('foot-tiktok').value = f.tiktok_url;
+      if (f.linkedin_url) document.getElementById('foot-linkedin').value = f.linkedin_url;
+      if (f.youtube_url) document.getElementById('foot-yt').value = f.youtube_url;
+      if (f.twitter_url) document.getElementById('foot-twitter').value = f.twitter_url;
+      if (f.copyright_text) document.getElementById('foot-copyright').value = f.copyright_text;
+    } catch {}
+  }
+
+  document.getElementById('footer-settings-form').addEventListener('submit', async e => {
+    e.preventDefault();
+    const body = {
+      org_name: 'Blessed Foundation Malawi',
+      description: document.getElementById('foot-desc').value,
+      phone: document.getElementById('foot-phone').value,
+      email: document.getElementById('foot-email').value,
+      address: document.getElementById('foot-address').value,
+      facebook_url: document.getElementById('foot-fb').value,
+      instagram_url: document.getElementById('foot-ig').value,
+      tiktok_url: document.getElementById('foot-tiktok').value,
+      linkedin_url: document.getElementById('foot-linkedin').value,
+      youtube_url: document.getElementById('foot-yt').value,
+      twitter_url: document.getElementById('foot-twitter').value,
+      copyright_text: document.getElementById('foot-copyright').value,
+    };
+    try {
+      const res = await authFetch('/api/footer', { method: 'PUT', body: JSON.stringify(body) });
+      if (res?.ok) adminToast('Footer settings updated!');
+    } catch { adminToast('Error', 'error'); }
+  });
+
+  // Load Nav Items
+  let navItems = [];
+  async function loadNav() {
+    try {
+      const res = await authFetch('/api/nav/all');
+      navItems = await res.json();
+      renderNav();
+    } catch {}
+  }
+
+  function renderNav() {
+    const list = document.getElementById('nav-items-list');
+    list.innerHTML = navItems.map((item, idx) => `
+      <div class="section-item">
+        <div style="display:flex;align-items:center;gap:12px;flex:1">
+          <input class="admin-input" type="text" value="${item.label}" onchange="navItems[${idx}].label=this.value" style="width:160px">
+          <input class="admin-input" type="text" value="${item.href}" onchange="navItems[${idx}].href=this.value" style="flex:1">
+        </div>
+        <div style="display:flex;align-items:center;gap:10px;margin-left:12px">
+          <label style="font-size:0.8rem"><input type="checkbox" ${item.is_visible ? 'checked' : ''} onchange="navItems[${idx}].is_visible=this.checked"> Visible</label>
+          <button class="btn-admin btn-icon-admin btn-danger-admin" onclick="deleteNavItem(${item.id})">✕</button>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  function addNavItem() {
+    navItems.push({ id: Date.now(), label: 'New Link', href: '#', is_visible: true, display_order: navItems.length + 1 });
+    renderNav();
+  }
+
+  async function deleteNavItem(id) {
+    navItems = navItems.filter(i => i.id !== id);
+    renderNav();
+  }
+
+  async function saveNavItems() {
+    try {
+      for (const item of navItems) {
+        if (typeof item.id === 'number' && item.id > 1000000) {
+          await authFetch('/api/nav', { method: 'POST', body: JSON.stringify(item) });
+        } else {
+          await authFetch(`/api/nav/${item.id}`, { method: 'PATCH', body: JSON.stringify(item) });
+        }
+      }
+      adminToast('Navigation menu saved!');
+    } catch { adminToast('Failed to save navigation', 'error'); }
+  }
+
+  // Load SEO
+  async function loadSEO() {
+    try {
+      const res = await authFetch('/api/seo');
+      const pages = await res.json();
+      document.getElementById('seo-pages-list').innerHTML = pages.map(p => `
+        <div style="background:var(--admin-bg);border:1px solid var(--admin-border);border-radius:8px;padding:16px;margin-bottom:16px">
+          <h4 style="font-weight:700;margin-bottom:10px">${p.page_label || p.page_slug}</h4>
+          <div class="admin-form-group">
+            <label class="admin-label">SEO Title</label>
+            <input class="admin-input" type="text" id="seo-title-${p.page_slug}" value="${p.seo_title || ''}">
+          </div>
+          <div class="admin-form-group">
+            <label class="admin-label">SEO Meta Description</label>
+            <textarea class="admin-textarea" id="seo-desc-${p.page_slug}">${p.seo_description || ''}</textarea>
+            <div class="admin-helper-text">Write a short description that may appear when this page is found on Google.</div>
+          </div>
+          <button class="btn-admin btn-secondary-admin" onclick="savePageSEO('${p.page_slug}')">Save ${p.page_label} SEO</button>
+        </div>
+      `).join('');
+    } catch {}
+  }
+
+  async function savePageSEO(slug) {
+    const title = document.getElementById(`seo-title-${slug}`).value;
+    const desc = document.getElementById(`seo-desc-${slug}`).value;
+    try {
+      const res = await authFetch(`/api/seo/${slug}`, { method: 'PUT', body: JSON.stringify({ seo_title: title, seo_description: desc }) });
+      if (res?.ok) adminToast(`SEO saved for ${slug}!`);
+    } catch { adminToast('Error', 'error'); }
+  }
+
+  loadGeneral();
+  loadFooter();
+  loadNav();
+  loadSEO();
 </script>
 </body>
 </html>

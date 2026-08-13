@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Donations & Paychangu — Blessed Foundation Admin</title>
+  <link rel="stylesheet" href="/admin/css/admin.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+<div class="admin-layout">
+  <aside class="sidebar" id="sidebar"></aside>
+
+  <main class="admin-main">
+    <div class="admin-topbar">
+      <div>
+        <h1 class="topbar-title">Donation Records & Configurator</h1>
+        <p style="font-size:0.85rem;color:var(--admin-text-muted)">Manage preset donation amounts, Paychangu mobile money, and export records</p>
+      </div>
+      <div class="topbar-actions">
+        <a href="/api/donations?format=csv" target="_blank" class="btn-admin btn-secondary-admin">
+          📥 Export CSV
+        </a>
+      </div>
+    </div>
+
+    <div class="admin-content">
+      <!-- Preset Amounts Configurator -->
+      <form id="donation-config-form" class="admin-card">
+        <div class="admin-card-header">
+          <h3 class="admin-card-title">Preset Donation Amounts (MWK)</h3>
+        </div>
+        <p style="font-size:0.85rem;color:var(--admin-text-muted);margin-bottom:16px">
+          Configure default contribution amounts presented to visitors on the donation page.
+        </p>
+        <div class="admin-form-group">
+          <label class="admin-label" for="donation-preset-input">Comma-separated Amounts (MWK)</label>
+          <input class="admin-input" type="text" id="donation-preset-input" value="5000,10000,25000,50000,100000">
+        </div>
+        <button type="submit" class="btn-admin btn-primary-admin">Save Donation Options</button>
+      </form>
+
+      <!-- Donations Log -->
+      <div class="admin-card">
+        <div class="admin-card-header">
+          <h3 class="admin-card-title">Donation Log</h3>
+        </div>
+        <div class="admin-table-container">
+          <table class="admin-table">
+            <thead>
+              <tr>
+                <th>Reference</th>
+                <th>Donor Name</th>
+                <th>Amount (MWK)</th>
+                <th>Frequency</th>
+                <th>Designation</th>
+                <th>Payment Method</th>
+                <th>Date</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody id="donations-tbody">
+              <tr><td colspan="8" style="text-align:center;color:var(--admin-text-muted);padding:40px">Loading donations…</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<script src="/admin/js/admin.js"></script>
+<script>
+  initSidebar();
+  loadUnreadCount();
+
+  async function loadDonationConfig() {
+    try {
+      const res = await fetch('/api/settings');
+      const data = await res.json();
+      if (data.donation_amounts) document.getElementById('donation-preset-input').value = data.donation_amounts;
+    } catch {}
+  }
+
+  document.getElementById('donation-config-form').addEventListener('submit', async e => {
+    e.preventDefault();
+    const val = document.getElementById('donation-preset-input').value;
+    try {
+      const res = await authFetch('/api/settings', { method: 'PUT', body: JSON.stringify({ donation_amounts: val }) });
+      if (res?.ok) adminToast('Preset donation amounts saved!');
+    } catch { adminToast('Error', 'error'); }
+  });
+
+  async function loadDonations() {
+    try {
+      const res = await authFetch('/api/donations');
+      const donations = await res.json();
+      renderDonations(donations);
+    } catch {
+      document.getElementById('donations-tbody').innerHTML = '<tr><td colspan="8" style="text-align:center;color:var(--admin-red)">Failed to load donation records.</td></tr>';
+    }
+  }
+
+  function renderDonations(donations) {
+    const tbody = document.getElementById('donations-tbody');
+    if (!donations.length) {
+      tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;color:var(--admin-text-muted);padding:40px">No donation records found.</td></tr>';
+      return;
+    }
+    tbody.innerHTML = donations.map(d => `
+      <tr>
+        <td><code>${d.reference || 'BFM-' + d.id}</code></td>
+        <td><div style="font-weight:700">${d.is_anonymous ? 'Anonymous Donor' : (d.donor_name || 'Anonymous')}</div><div style="font-size:0.75rem;color:var(--admin-text-muted)">${d.donor_email || ''}</div></td>
+        <td><strong style="color:var(--admin-green-light)">MWK ${parseFloat(d.amount).toLocaleString()}</strong></td>
+        <td>${d.frequency || 'one-time'}</td>
+        <td>${d.designation || 'General'}</td>
+        <td>${d.payment_method || 'Mobile Money'}</td>
+        <td>${fmtDate(d.created_at)}</td>
+        <td><span class="badge-status ${d.status === 'Completed' ? 'completed' : 'draft'}">${d.status || 'Completed'}</span></td>
+      </tr>
+    `).join('');
+  }
+
+  loadDonationConfig();
+  loadDonations();
+</script>
+</body>
+</html>

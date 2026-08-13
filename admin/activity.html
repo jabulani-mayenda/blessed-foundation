@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Activity Log — Blessed Foundation Admin</title>
+  <link rel="stylesheet" href="/admin/css/admin.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+<div class="admin-layout">
+  <aside class="sidebar" id="sidebar"></aside>
+
+  <main class="admin-main">
+    <div class="admin-topbar">
+      <div>
+        <h1 class="topbar-title">Activity Audit Trail</h1>
+        <p style="font-size:0.85rem;color:var(--admin-text-muted)">Real-time accountability log of administrative actions</p>
+      </div>
+    </div>
+
+    <div class="admin-content">
+      <div class="admin-table-container">
+        <table class="admin-table">
+          <thead>
+            <tr>
+              <th>Administrator</th>
+              <th>Action</th>
+              <th>Content Item</th>
+              <th>Date & Time</th>
+            </tr>
+          </thead>
+          <tbody id="activity-tbody">
+            <tr><td colspan="4" style="text-align:center;color:var(--admin-text-muted);padding:40px">Loading activity log…</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </main>
+</div>
+
+<script src="/admin/js/admin.js"></script>
+<script>
+  initSidebar();
+  loadUnreadCount();
+
+  async function loadActivity() {
+    try {
+      const res = await authFetch('/api/activity');
+      const logs = await res.json();
+      const tbody = document.getElementById('activity-tbody');
+      if (!logs.length) {
+        tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;color:var(--admin-text-muted);padding:40px">No activity recorded yet.</td></tr>';
+        return;
+      }
+      tbody.innerHTML = logs.map(l => `
+        <tr>
+          <td><strong style="color:var(--admin-green-light)">${l.admin_name || 'Admin'}</strong></td>
+          <td><span class="badge-status" style="background:rgba(255,255,255,0.06);color:var(--admin-text)">${l.action}</span></td>
+          <td>${l.entity_title || l.entity_type || '—'}</td>
+          <td>${new Date(l.created_at).toLocaleString()}</td>
+        </tr>
+      `).join('');
+    } catch {
+      document.getElementById('activity-tbody').innerHTML = '<tr><td colspan="4" style="text-align:center;color:var(--admin-red)">Failed to load activity log.</td></tr>';
+    }
+  }
+
+  loadActivity();
+</script>
+</body>
+</html>

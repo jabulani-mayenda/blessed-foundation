@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Projects — Blessed Foundation Admin</title>
+  <link rel="stylesheet" href="/admin/css/admin.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+<div class="admin-layout">
+  <aside class="sidebar" id="sidebar"></aside>
+
+  <main class="admin-main">
+    <div class="admin-topbar">
+      <div>
+        <h1 class="topbar-title">Projects Management</h1>
+        <p style="font-size:0.85rem;color:var(--admin-text-muted)">Manage community development projects, locations, and public disclosures</p>
+      </div>
+      <div class="topbar-actions">
+        <button class="btn-admin btn-primary-admin" onclick="openModal('project-modal')">
+          + Add New Project
+        </button>
+      </div>
+    </div>
+
+    <div class="admin-content">
+      <div class="admin-table-container">
+        <table class="admin-table">
+          <thead>
+            <tr>
+              <th>Project Name</th>
+              <th>Programme</th>
+              <th>Location</th>
+              <th>Status</th>
+              <th>Public Display Options</th>
+              <th style="width:100px">Actions</th>
+            </tr>
+          </thead>
+          <tbody id="projects-tbody">
+            <tr><td colspan="6" style="text-align:center;color:var(--admin-text-muted);padding:40px">Loading projects…</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </main>
+</div>
+
+<!-- Project Modal -->
+<div id="project-modal" class="modal-overlay">
+  <div class="modal-body" style="max-width:600px">
+    <div class="modal-header">
+      <h3 style="font-size:1.1rem;font-weight:700" id="proj-modal-title">New Project</h3>
+      <button class="btn-admin btn-ghost-admin" onclick="closeModal('project-modal')">✕</button>
+    </div>
+
+    <form id="project-form">
+      <input type="hidden" id="proj-id">
+      <div class="admin-form-group">
+        <label class="admin-label" for="proj-name">Project Name</label>
+        <input class="admin-input" type="text" id="proj-name" placeholder="e.g. Community School Support Programme" required>
+      </div>
+
+      <div class="admin-form-group">
+        <label class="admin-label" for="proj-desc">Description</label>
+        <textarea class="admin-textarea" id="proj-desc" placeholder="Providing learning packages and school desks..."></textarea>
+      </div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+        <div class="admin-form-group">
+          <label class="admin-label" for="proj-location">Location</label>
+          <input class="admin-input" type="text" id="proj-location" placeholder="e.g. Chikwawa, Southern Malawi">
+        </div>
+        <div class="admin-form-group">
+          <label class="admin-label" for="proj-status">Status</label>
+          <select class="admin-select" id="proj-status">
+            <option value="active">Active</option>
+            <option value="completed">Completed</option>
+            <option value="paused">Paused</option>
+          </select>
+        </div>
+      </div>
+
+      <h4 style="font-size:0.9rem;font-weight:700;margin:16px 0 10px">Public Visibility Settings</h4>
+      <div style="display:flex;gap:20px;margin-bottom:20px">
+        <label style="font-size:0.85rem"><input type="checkbox" id="show-location" checked> Show Location</label>
+        <label style="font-size:0.85rem"><input type="checkbox" id="show-dates" checked> Show Dates</label>
+        <label style="font-size:0.85rem"><input type="checkbox" id="show-budget"> Show Budget</label>
+      </div>
+
+      <div style="display:flex;justify-content:flex-end;gap:12px">
+        <button type="button" class="btn-admin btn-ghost-admin" onclick="closeModal('project-modal')">Cancel</button>
+        <button type="submit" class="btn-admin btn-primary-admin">Save Project</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script src="/admin/js/admin.js"></script>
+<script>
+  initSidebar();
+  loadUnreadCount();
+
+  let projects = [];
+
+  async function loadProjects() {
+    try {
+      const res = await authFetch('/api/projects/all');
+      projects = await res.json();
+      renderProjects();
+    } catch {
+      document.getElementById('projects-tbody').innerHTML = '<tr><td colspan="6" style="text-align:center;color:var(--admin-red)">Failed to load projects.</td></tr>';
+    }
+  }
+
+  function renderProjects() {
+    const tbody = document.getElementById('projects-tbody');
+    if (!projects.length) {
+      tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;color:var(--admin-text-muted);padding:40px">No projects created yet.</td></tr>';
+      return;
+    }
+    tbody.innerHTML = projects.map(p => `
+      <tr>
+        <td><div style="font-weight:700">${p.name}</div></td>
+        <td>${p.program_name || 'General'}</td>
+        <td>${p.location || 'Malawi'}</td>
+        <td><span class="badge-status ${p.status}">${p.status}</span></td>
+        <td style="font-size:0.8rem;color:var(--admin-text-muted)">
+          ${p.show_location ? '☑ Location' : '☐ Location'} • ${p.show_dates ? '☑ Dates' : '☐ Dates'} • ${p.show_budget ? '☑ Budget' : '☐ Budget'}
+        </td>
+        <td>
+          <div style="display:flex;gap:6px">
+            <button class="btn-admin btn-icon-admin btn-ghost-admin" onclick="editProject(${p.id})">✏️</button>
+            <button class="btn-admin btn-icon-admin btn-danger-admin" onclick="deleteProject(${p.id})">🗑️</button>
+          </div>
+        </td>
+      </tr>
+    `).join('');
+  }
+
+  function editProject(id) {
+    const p = projects.find(x => x.id === id);
+    if (!p) return;
+    document.getElementById('proj-id').value = p.id;
+    document.getElementById('proj-name').value = p.name;
+    document.getElementById('proj-desc').value = p.description || '';
+    document.getElementById('proj-location').value = p.location || '';
+    document.getElementById('proj-status').value = p.status || 'active';
+    document.getElementById('show-location').checked = p.show_location;
+    document.getElementById('show-dates').checked = p.show_dates;
+    document.getElementById('show-budget').checked = p.show_budget;
+    openModal('project-modal');
+  }
+
+  document.getElementById('project-form').addEventListener('submit', async e => {
+    e.preventDefault();
+    const id = document.getElementById('proj-id').value;
+    const body = {
+      name: document.getElementById('proj-name').value,
+      description: document.getElementById('proj-desc').value,
+      location: document.getElementById('proj-location').value,
+      status: document.getElementById('proj-status').value,
+      show_location: document.getElementById('show-location').checked,
+      show_dates: document.getElementById('show-dates').checked,
+      show_budget: document.getElementById('show-budget').checked,
+    };
+    try {
+      const url = id ? `/api/projects/${id}` : '/api/projects';
+      const method = id ? 'PATCH' : 'POST';
+      const res = await authFetch(url, { method, body: JSON.stringify(body) });
+      if (res?.ok) {
+        adminToast('Project saved!');
+        closeModal('project-modal');
+        e.target.reset();
+        loadProjects();
+      }
+    } catch { adminToast('Error saving project', 'error'); }
+  });
+
+  async function deleteProject(id) {
+    if (!confirm('Delete this project?')) return;
+    try {
+      const res = await authFetch(`/api/projects/${id}`, { method: 'DELETE' });
+      if (res?.ok) { adminToast('Project deleted'); loadProjects(); }
+    } catch { adminToast('Delete failed', 'error'); }
+  }
+
+  loadProjects();
+</script>
+</body>
+</html>

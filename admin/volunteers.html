@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Volunteers — Blessed Foundation Admin</title>
+  <link rel="stylesheet" href="/admin/css/admin.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+<div class="admin-layout">
+  <aside class="sidebar" id="sidebar"></aside>
+
+  <main class="admin-main">
+    <div class="admin-topbar">
+      <div>
+        <h1 class="topbar-title">Volunteer Applications</h1>
+        <p style="font-size:0.85rem;color:var(--admin-text-muted)">Review volunteer applications and maintain private internal team notes</p>
+      </div>
+    </div>
+
+    <div class="admin-content">
+      <div class="admin-table-container">
+        <table class="admin-table">
+          <thead>
+            <tr>
+              <th>Status</th>
+              <th>Applicant Name</th>
+              <th>Area of Interest</th>
+              <th>Availability</th>
+              <th>Date</th>
+              <th style="width:120px">Actions</th>
+            </tr>
+          </thead>
+          <tbody id="volunteers-tbody">
+            <tr><td colspan="6" style="text-align:center;color:var(--admin-text-muted);padding:40px">Loading volunteer applications…</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </main>
+</div>
+
+<!-- Volunteer Modal -->
+<div id="volunteer-modal" class="modal-overlay">
+  <div class="modal-body" style="max-width:600px">
+    <div class="modal-header">
+      <h3 style="font-size:1.1rem;font-weight:700">Volunteer Application Details</h3>
+      <button class="btn-admin btn-ghost-admin" onclick="closeModal('volunteer-modal')">✕</button>
+    </div>
+
+    <div style="margin-bottom:20px">
+      <div style="font-weight:700;font-size:1.1rem" id="vol-name">—</div>
+      <div style="font-size:0.85rem;color:var(--admin-text-muted)" id="vol-contact">—</div>
+    </div>
+
+    <div class="admin-form-group">
+      <label class="admin-label">Area of Interest & Availability</label>
+      <div style="background:var(--admin-bg);padding:12px;border-radius:8px;font-size:0.9rem" id="vol-interest">—</div>
+    </div>
+
+    <div class="admin-form-group">
+      <label class="admin-label">Applicant Message</label>
+      <div style="background:var(--admin-bg);padding:14px;border-radius:8px;font-size:0.9rem;white-space:pre-wrap" id="vol-message">—</div>
+    </div>
+
+    <div class="admin-form-group">
+      <label class="admin-label" for="vol-status-select">Application Status</label>
+      <select class="admin-select" id="vol-status-select">
+        <option value="new">New</option>
+        <option value="contacted">Contacted</option>
+        <option value="accepted">Accepted</option>
+        <option value="rejected">Rejected</option>
+        <option value="completed">Completed</option>
+      </select>
+    </div>
+
+    <div class="admin-form-group">
+      <label class="admin-label" for="vol-notes">Internal Team Notes (Private)</label>
+      <textarea class="admin-textarea" id="vol-notes" placeholder="Write internal notes about interview or background check..."></textarea>
+      <div class="admin-helper-text">🔒 Internal notes are strictly private and NEVER appear on the public website.</div>
+    </div>
+
+    <div style="display:flex;justify-content:flex-end;gap:12px">
+      <button class="btn-admin btn-ghost-admin" onclick="closeModal('volunteer-modal')">Close</button>
+      <button class="btn-admin btn-primary-admin" onclick="saveVolunteerDetails()">Save Changes</button>
+    </div>
+  </div>
+</div>
+
+<script src="/admin/js/admin.js"></script>
+<script>
+  initSidebar();
+  loadUnreadCount();
+
+  let volunteers = [];
+  let currentVolId = null;
+
+  async function loadVolunteers() {
+    try {
+      const res = await authFetch('/api/volunteers');
+      volunteers = await res.json();
+      renderVolunteers();
+    } catch {
+      document.getElementById('volunteers-tbody').innerHTML = '<tr><td colspan="6" style="text-align:center;color:var(--admin-red)">Failed to load applications.</td></tr>';
+    }
+  }
+
+  function renderVolunteers() {
+    const tbody = document.getElementById('volunteers-tbody');
+    if (!volunteers.length) {
+      tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;color:var(--admin-text-muted);padding:40px">No volunteer applications received yet.</td></tr>';
+      return;
+    }
+    tbody.innerHTML = volunteers.map(v => `
+      <tr>
+        <td><span class="badge-status ${v.status}">${v.status || 'new'}</span></td>
+        <td><div style="font-weight:700">${v.name}</div><div style="font-size:0.75rem;color:var(--admin-text-muted)">${v.email}</div></td>
+        <td>${v.area_of_interest || 'General'}</td>
+        <td>${v.availability || 'Flexible'}</td>
+        <td>${fmtDate(v.received_at)}</td>
+        <td>
+          <button class="btn-admin btn-secondary-admin" onclick="viewVolunteer(${v.id})">Review</button>
+        </td>
+      </tr>
+    `).join('');
+  }
+
+  function viewVolunteer(id) {
+    const v = volunteers.find(x => x.id === id);
+    if (!v) return;
+    currentVolId = id;
+    document.getElementById('vol-name').textContent = v.name;
+    document.getElementById('vol-contact').textContent = `${v.email} • ${v.phone || 'No phone'}`;
+    document.getElementById('vol-interest').textContent = `${v.area_of_interest || 'General'} (${v.availability || 'Flexible'})`;
+    document.getElementById('vol-message').textContent = v.message || '(No message provided)';
+    document.getElementById('vol-status-select').value = v.status || 'new';
+    document.getElementById('vol-notes').value = v.internal_notes || '';
+    openModal('volunteer-modal');
+  }
+
+  async function saveVolunteerDetails() {
+    if (!currentVolId) return;
+    const status = document.getElementById('vol-status-select').value;
+    const internal_notes = document.getElementById('vol-notes').value;
+    try {
+      const res = await authFetch(`/api/volunteers/${currentVolId}`, {
+        method: 'PATCH',
+        body: JSON.stringify({ status, internal_notes }),
+      });
+      if (res?.ok) {
+        adminToast('Volunteer record updated!');
+        closeModal('volunteer-modal');
+        loadVolunteers();
+      }
+    } catch { adminToast('Update failed', 'error'); }
+  }
+
+  loadVolunteers();
+</script>
+</body>
+</html>

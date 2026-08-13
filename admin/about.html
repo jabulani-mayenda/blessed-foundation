@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>About Page Editor — Blessed Foundation Admin</title>
+  <link rel="stylesheet" href="/admin/css/admin.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+<div class="admin-layout">
+  <aside class="sidebar" id="sidebar"></aside>
+
+  <main class="admin-main">
+    <div class="admin-topbar">
+      <div>
+        <h1 class="topbar-title">About Page Editor</h1>
+        <p style="font-size:0.85rem;color:var(--admin-text-muted)">Edit mission, vision, story paragraphs, and core organisation values</p>
+      </div>
+    </div>
+
+    <div class="admin-content">
+      <form id="about-form" class="admin-card">
+        <div class="admin-card-header">
+          <h3 class="admin-card-title">1. Main Content & Story</h3>
+        </div>
+
+        <div class="admin-form-group">
+          <label class="admin-label">Page Heading</label>
+          <input class="admin-input" type="text" id="about-heading" value="About Blessed Foundation">
+        </div>
+
+        <div class="admin-form-group">
+          <label class="admin-label">Introduction Summary</label>
+          <textarea class="admin-textarea" id="about-intro">Blessed Foundation is a Malawian community-focused organisation working to support people, strengthen communities and create opportunities for a better future.</textarea>
+        </div>
+
+        <div class="admin-form-group">
+          <label class="admin-label">Our Mission Statement</label>
+          <textarea class="admin-textarea" id="about-mission">To work directly alongside Malawian communities, providing practical support in education, youth empowerment, healthcare access, and economic self-reliance.</textarea>
+        </div>
+
+        <div class="admin-form-group">
+          <label class="admin-label">Our Vision Statement</label>
+          <textarea class="admin-textarea" id="about-vision">A Malawi where every person and community has the resources, dignity, and opportunities needed to build a self-sustaining and hopeful future.</textarea>
+        </div>
+
+        <button type="submit" class="btn-admin btn-primary-admin">Save About Content</button>
+      </form>
+
+      <!-- Core Values -->
+      <div class="admin-card">
+        <div class="admin-card-header">
+          <h3 class="admin-card-title">2. Organisation Values</h3>
+          <button class="btn-admin btn-secondary-admin" onclick="addValue()">+ Add Value</button>
+        </div>
+
+        <div id="values-list">
+          <div class="section-item"><div><strong>Compassion</strong> — Putting people and community dignity at the center of every decision.</div></div>
+          <div class="section-item"><div><strong>Integrity</strong> — Absolute transparency and accountability in all operations.</div></div>
+          <div class="section-item"><div><strong>Community</strong> — Working alongside local leaders and families.</div></div>
+          <div class="section-item"><div><strong>Dignity</strong> — Respecting the agency and strength of every individual.</div></div>
+          <div class="section-item"><div><strong>Opportunity</strong> — Creating sustainable paths toward education and self-reliance.</div></div>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<script src="/admin/js/admin.js"></script>
+<script>
+  initSidebar();
+  loadUnreadCount();
+
+  async function loadAbout() {
+    try {
+      const res = await fetch('/api/settings');
+      const data = await res.json();
+      if (data.about_heading) document.getElementById('about-heading').value = data.about_heading;
+      if (data.about_intro) document.getElementById('about-intro').value = data.about_intro;
+      if (data.about_mission) document.getElementById('about-mission').value = data.about_mission;
+      if (data.about_vision) document.getElementById('about-vision').value = data.about_vision;
+    } catch {}
+  }
+
+  document.getElementById('about-form').addEventListener('submit', async e => {
+    e.preventDefault();
+    const body = {
+      about_heading: document.getElementById('about-heading').value,
+      about_intro: document.getElementById('about-intro').value,
+      about_mission: document.getElementById('about-mission').value,
+      about_vision: document.getElementById('about-vision').value,
+    };
+    try {
+      const res = await authFetch('/api/settings', { method: 'PUT', body: JSON.stringify(body) });
+      if (res?.ok) adminToast('About page content saved!');
+    } catch { adminToast('Error', 'error'); }
+  });
+
+  function addValue() {
+    const name = prompt('Value Name (e.g. Hope):');
+    if (!name) return;
+    const desc = prompt('Description:');
+    const div = document.createElement('div');
+    div.className = 'section-item';
+    div.innerHTML = `<div><strong>${name}</strong> — ${desc || ''}</div>`;
+    document.getElementById('values-list').appendChild(div);
+    adminToast('Value added!');
+  }
+
+  loadAbout();
+</script>
+</body>
+</html>

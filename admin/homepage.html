@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Home Page Editor — Blessed Foundation Admin</title>
+  <link rel="stylesheet" href="/admin/css/admin.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+<div class="admin-layout">
+  <aside class="sidebar" id="sidebar"></aside>
+
+  <main class="admin-main">
+    <div class="admin-topbar">
+      <div>
+        <h1 class="topbar-title">Home Page Editor</h1>
+        <p style="font-size:0.85rem;color:var(--admin-text-muted)">Manage home page sections, hero text, buttons, and display order</p>
+      </div>
+    </div>
+
+    <div class="admin-content">
+      <!-- Hero Section Editor -->
+      <form id="hero-form" class="admin-card">
+        <div class="admin-card-header">
+          <h3 class="admin-card-title">1. Hero Section Content</h3>
+        </div>
+        <div class="admin-form-group">
+          <label class="admin-label">Small Top Label</label>
+          <input class="admin-input" type="text" id="hero-label" value="BLESSED FOUNDATION MALAWI">
+        </div>
+        <div class="admin-form-group">
+          <label class="admin-label">Main Heading</label>
+          <input class="admin-input" type="text" id="hero-heading" value="Building hope. Changing lives.">
+        </div>
+        <div class="admin-form-group">
+          <label class="admin-label">Description Paragraph</label>
+          <textarea class="admin-textarea" id="hero-subtext">Supporting communities and creating opportunities across Malawi.</textarea>
+        </div>
+
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+          <div class="admin-form-group">
+            <label class="admin-label">Main Button Text</label>
+            <input class="admin-input" type="text" id="btn1-text" value="Support Our Work">
+          </div>
+          <div class="admin-form-group">
+            <label class="admin-label">Main Button Link</label>
+            <input class="admin-input" type="text" id="btn1-link" value="/donate.html">
+          </div>
+        </div>
+
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+          <div class="admin-form-group">
+            <label class="admin-label">Secondary Button Text</label>
+            <input class="admin-input" type="text" id="btn2-text" value="Learn More">
+          </div>
+          <div class="admin-form-group">
+            <label class="admin-label">Secondary Button Link</label>
+            <input class="admin-input" type="text" id="btn2-link" value="/about.html">
+          </div>
+        </div>
+
+        <button type="submit" class="btn-admin btn-primary-admin">Save Hero Content</button>
+      </form>
+
+      <!-- Home Page Sections Manager -->
+      <div class="admin-card">
+        <div class="admin-card-header">
+          <h3 class="admin-card-title">2. Home Page Section Visibility & Order</h3>
+        </div>
+        <p style="font-size:0.85rem;color:var(--admin-text-muted);margin-bottom:20px">
+          Use the Move Up / Move Down buttons to reorder sections. Hide a section temporarily without deleting its content.
+        </p>
+
+        <div id="home-sections-list">
+          <!-- Dynamic sections -->
+        </div>
+
+        <button class="btn-admin btn-primary-admin" style="margin-top:16px" onclick="saveSectionsOrder()">Save Section Order</button>
+      </div>
+    </div>
+  </main>
+</div>
+
+<script src="/admin/js/admin.js"></script>
+<script>
+  initSidebar();
+  loadUnreadCount();
+
+  let sections = [];
+
+  async function loadHero() {
+    try {
+      const res = await fetch('/api/settings');
+      const data = await res.json();
+      if (data.hero_label) document.getElementById('hero-label').value = data.hero_label;
+      if (data.hero_heading) document.getElementById('hero-heading').value = data.hero_heading;
+      if (data.hero_subtext) document.getElementById('hero-subtext').value = data.hero_subtext;
+      if (data.hero_btn1_text) document.getElementById('btn1-text').value = data.hero_btn1_text;
+      if (data.hero_btn1_link) document.getElementById('btn1-link').value = data.hero_btn1_link;
+      if (data.hero_btn2_text) document.getElementById('btn2-text').value = data.hero_btn2_text;
+      if (data.hero_btn2_link) document.getElementById('btn2-link').value = data.hero_btn2_link;
+    } catch {}
+  }
+
+  document.getElementById('hero-form').addEventListener('submit', async e => {
+    e.preventDefault();
+    const body = {
+      hero_label: document.getElementById('hero-label').value,
+      hero_heading: document.getElementById('hero-heading').value,
+      hero_subtext: document.getElementById('hero-subtext').value,
+      hero_btn1_text: document.getElementById('btn1-text').value,
+      hero_btn1_link: document.getElementById('btn1-link').value,
+      hero_btn2_text: document.getElementById('btn2-text').value,
+      hero_btn2_link: document.getElementById('btn2-link').value,
+    };
+    try {
+      const res = await authFetch('/api/settings', { method: 'PUT', body: JSON.stringify(body) });
+      if (res?.ok) adminToast('Hero content saved!');
+    } catch { adminToast('Error saving hero', 'error'); }
+  });
+
+  async function loadSections() {
+    try {
+      const res = await fetch('/api/sections/home');
+      sections = await res.json();
+      renderSections();
+    } catch {}
+  }
+
+  function renderSections() {
+    const list = document.getElementById('home-sections-list');
+    list.innerHTML = sections.map((sec, idx) => `
+      <div class="section-item">
+        <div class="section-info">
+          <span style="font-weight:700;color:var(--admin-text-muted)">0${idx+1}</span>
+          <div>
+            <div style="font-weight:700">${sec.label}</div>
+            <div style="font-size:0.75rem;color:var(--admin-text-muted)">key: ${sec.section_key}</div>
+          </div>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px">
+          <label style="font-size:0.8rem;cursor:pointer"><input type="checkbox" ${sec.is_visible ? 'checked' : ''} onchange="sections[${idx}].is_visible=this.checked"> Visible</label>
+          <button class="btn-admin btn-secondary-admin" onclick="moveSection(${idx}, -1)" ${idx === 0 ? 'disabled' : ''}>▲ Up</button>
+          <button class="btn-admin btn-secondary-admin" onclick="moveSection(${idx}, 1)" ${idx === sections.length-1 ? 'disabled' : ''}>▼ Down</button>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  function moveSection(index, direction) {
+    const target = index + direction;
+    if (target < 0 || target >= sections.length) return;
+    const temp = sections[index];
+    sections[index] = sections[target];
+    sections[target] = temp;
+    sections.forEach((s, i) => s.display_order = i + 1);
+    renderSections();
+  }
+
+  async function saveSectionsOrder() {
+    try {
+      const res = await authFetch('/api/sections/reorder', { method: 'PUT', body: JSON.stringify({ sections }) });
+      if (res?.ok) adminToast('Section order saved!');
+    } catch { adminToast('Error', 'error'); }
+  }
+
+  loadHero();
+  loadSections();
+</script>
+</body>
+</html>
