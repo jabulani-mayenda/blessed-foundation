@@ -72,8 +72,8 @@
       const data = await res.json();
 
       if (res.ok) {
-        localStorage.setItem('smf_admin_token', data.token);
-        localStorage.setItem('smf_admin_username', data.username);
+        localStorage.setItem('bf_admin_token', data.token);
+        localStorage.setItem('bf_admin_username', data.username);
         window.location.href = '/admin/dashboard.html';
       } else {
         errorEl.textContent = data.error || 'Login failed. Please try again.';

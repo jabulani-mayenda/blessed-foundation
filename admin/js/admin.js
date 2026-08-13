@@ -5,8 +5,8 @@
 const API = '';
 
 // ─── Auth ───
-function getToken() { return localStorage.getItem('smf_admin_token'); }
-function getUsername() { return localStorage.getItem('smf_admin_username'); }
+function getToken() { return localStorage.getItem('bf_admin_token'); }
+function getUsername() { return localStorage.getItem('bf_admin_username'); }
 
 function requireAuth() {
   const token = getToken();
@@ -30,8 +30,8 @@ async function authFetch(url, options = {}) {
   const res = await fetch(url, { ...options, headers });
 
   if (res.status === 401 || res.status === 403) {
-    localStorage.removeItem('smf_admin_token');
-    localStorage.removeItem('smf_admin_username');
+    localStorage.removeItem('bf_admin_token');
+    localStorage.removeItem('bf_admin_username');
     window.location.href = '/admin/index.html?expired=1';
     return null;
   }
