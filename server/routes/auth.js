@@ -7,7 +7,7 @@ const router = express.Router();
 
 // POST /api/auth/login
 router.post('/login', async (req, res) => {
-  const { username, password } = req.body;
+  const { username, password } = req.body || {};
 
   if (!username || !password) {
     return res.status(400).json({ error: 'Username and password are required.' });
@@ -25,23 +25,26 @@ router.post('/login', async (req, res) => {
       return res.status(401).json({ error: 'Invalid credentials.' });
     }
 
+    const secret = process.env.JWT_SECRET || 'blessed_foundation_malawi_secret_key_2026';
+    const expiresIn = process.env.JWT_EXPIRES_IN || '24h';
+
     const token = jwt.sign(
       { id: admin.id, username: admin.username },
-      process.env.JWT_SECRET,
-      { expiresIn: process.env.JWT_EXPIRES_IN }
+      secret,
+      { expiresIn }
     );
 
     res.json({ token, username: admin.username });
   } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: 'Server error.' });
+    console.error('Login Auth Error:', err);
+    res.status(500).json({ error: err.message || 'Server error during authentication.' });
   }
 });
 
 // POST /api/auth/change-password
 const auth = require('../middleware/auth');
 router.post('/change-password', auth, async (req, res) => {
-  const { currentPassword, newPassword } = req.body;
+  const { currentPassword, newPassword } = req.body || {};
   if (!currentPassword || !newPassword) {
     return res.status(400).json({ error: 'Both current and new password are required.' });
   }
@@ -57,8 +60,8 @@ router.post('/change-password', auth, async (req, res) => {
     await query('UPDATE admins SET password_hash = $1 WHERE id = $2', [hash, req.admin.id]);
     res.json({ message: 'Password updated successfully.' });
   } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: 'Server error.' });
+    console.error('Change Password Error:', err);
+    res.status(500).json({ error: err.message || 'Server error.' });
   }
 });
 

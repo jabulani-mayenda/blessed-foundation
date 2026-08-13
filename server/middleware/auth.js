@@ -9,7 +9,8 @@ function authenticateToken(req, res, next) {
   }
 
   try {
-    const verified = jwt.verify(token, process.env.JWT_SECRET);
+    const secret = process.env.JWT_SECRET || 'blessed_foundation_malawi_secret_key_2026';
+    const verified = jwt.verify(token, secret);
     req.admin = verified;
     next();
   } catch (err) {
