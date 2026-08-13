@@ -4,7 +4,6 @@ const cors = require('cors');
 const path = require('path');
 
 const app = express();
-const PORT = process.env.PORT || 3000;
 
 // Middleware
 app.use(cors());
@@ -74,9 +73,14 @@ app.use((err, req, res, next) => {
   res.status(500).json({ error: err.message || 'Internal server error.' });
 });
 
-app.listen(PORT, () => {
-  console.log(`\n🚀 Blessed Foundation Malawi server running`);
-  console.log(`   Public site:  http://localhost:${PORT}`);
-  console.log(`   Admin panel:  http://localhost:${PORT}/admin`);
-  console.log(`   API:          http://localhost:${PORT}/api\n`);
-});
+if (require.main === module) {
+  const PORT = process.env.PORT || 3000;
+  app.listen(PORT, () => {
+    console.log(`\n🚀 Blessed Foundation Malawi server running`);
+    console.log(`   Public site:  http://localhost:${PORT}`);
+    console.log(`   Admin panel:  http://localhost:${PORT}/admin`);
+    console.log(`   API:          http://localhost:${PORT}/api\n`);
+  });
+}
+
+module.exports = app;
